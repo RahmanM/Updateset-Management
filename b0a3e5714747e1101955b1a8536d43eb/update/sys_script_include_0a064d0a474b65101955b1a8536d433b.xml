@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>public</access>
+        <active>true</active>
+        <api_name>x_293046_updateset.UpdatesetHelper</api_name>
+        <caller_access/>
+        <client_callable>false</client_callable>
+        <description/>
+        <name>UpdatesetHelper</name>
+        <script><![CDATA[
+var UpdatesetHelper = Class.create();
+UpdatesetHelper.prototype = {
+
+  devUrl: '',
+  uatUrl: '',
+  prodUrl: '',
+  devRecordsLimit: 0,
+  devEncodedQuery: '',
+
+  /**
+   * 
+   * @param {string} devUrl : DEV instance URL
+   * @param {string} uatUrl : UAT URL
+   * @param {string} prodUrl : Prod URL
+   * @param {string} maxRecordsLimit : Max number of records to search
+   * @param {string} encodedQuery : encoded query to be applied to limit the records
+   */
+  initialize: function (devUrl, uatUrl, prodUrl, maxRecordsLimit, encodedQuery) {
+
+    this.devUrl = devUrl ? devUrl : gs.getProperty('x_293046_updateset.DEV_Base_URL');
+    this.uatUrl = uatUrl ? uatUrl : gs.getProperty('x_293046_updateset.UAT_Base_URL');
+    this.prodUrl = prodUrl ? prodUrl : gs.getProperty('x_293046_updateset.Prod_Base_URL');
+    this.devRecordsLimit = maxRecordsLimit ? maxRecordsLimit : gs.getProperty('x_293046_updateset.dev_records_limit', 100);
+
+    if (encodedQuery) {
+      encodedQuery = encodeURIComponent(encodedQuery); // Apply URI encoding as REST needs i
+    }
+
+    this.devEncodedQuery = encodedQuery ? encodedQuery : "state=complete";
+  },
+
+  /**
+   * This is the main function to be called. It will return all update-sets with Dev update-sets as left joined
+   * @returns a list of all the DEV, UAT and Prod update-sets
+   */
+  getMergedUpdatesets: function () {
+
+    var allUpdatesets = this.processUpdateSetsForAllEnvironments();
+
+    var joinedUpdatesets = this.leftJoinUpdatesets(allUpdatesets.dev, allUpdatesets.uat, allUpdatesets.prod);
+
+    return joinedUpdatesets;
+
+  },
+
+  /**
+   * 
+   * @param {array} dev : array of the DEV update-sets
+   * @param {array} uat : array of the UAT update-sets
+   * @param {array} prod : array of the PROD update-sets
+   * @returns a flat array that will have a node for each of the DEV updateset or default it to null if not exist in UAT and Prod
+   */
+  leftJoinUpdatesets: function (dev, uat, prod) {
+    const result = [];
+
+    for (let i = 0; i < dev.length; i++) {
+      const joinedUpdatesets = {
+        devUpdateset: dev[i],
+        uatUpdateset: null,
+        prodUpdateset: null
+      };
+
+      const uatMatch = uat.find(task => task.remote_sys_id === dev[i].sys_id);
+      if (uatMatch) {
+        joinedUpdatesets.uatUpdateset = uatMatch;
+      }
+
+      const prodMatch = prod.find(task => task.remote_sys_id === dev[i].sys_id);
+      if (prodMatch) {
+        joinedUpdatesets.prodUpdateset = prodMatch;
+      }
+
+      result.push(joinedUpdatesets);
+    }
+
+    return result.flat();
+  },
+
+  /**
+   * Returns all the update-sets for DEV, UAT and Prod unprocessed.
+   * UAT and PROD update-sets are filtered based on the sys_ids of the DEV
+   * @returns 
+   */
+  processUpdateSetsForAllEnvironments: function () {
+    // Get the local and remote update-sets
+    let allUpdatesets = {
+      dev: [],
+      uat: [],
+      prod: []
+    };
+
+    let localUpdatesets = this.getDevUpdatesets();
+
+    // Get the remote update-sets for the sys_ids we identified for DEV
+    if (localUpdatesets) {
+      let resultObj = JSON.parse(localUpdatesets);
+      allUpdatesets.dev = resultObj.result;
+
+      let sysIds = resultObj.result.map((item) => item.sys_id);
+      let encodedQuery = "remote_sys_idIN" + sysIds.join();
+
+      // Get uat updatesets
+      let uatResultJson = this.getUatUpdatesets(encodedQuery);
+      if (uatResultJson) {
+        let uatResultObj = JSON.parse(uatResultJson);
+        allUpdatesets.uat = uatResultObj.result;
+      }
+
+      // Get prod updatesets
+      let prodResultJson = this.getProdUpdatesets(encodedQuery);
+      if (prodResultJson) {
+        let prodResultObj = JSON.parse(prodResultJson);
+        allUpdatesets.prod = prodResultObj.result;
+      }
+    }
+
+    return allUpdatesets;
+  },
+
+  getUatUpdatesets: function (encodedQuery) {
+    let result = [];
+
+    if (!this.uatUrl) return result;
+
+    result = this.getRemoteUpdatesets(this.uatUrl, encodedQuery);
+    return result;
+  },
+
+  getProdUpdatesets: function (encodedQuery) {
+    let result = [];
+
+    if (!this.prodUrl) return result;
+
+    result = this.getRemoteUpdatesets(this.prodUrl, encodedQuery);
+    return result;
+  },
+
+  /**
+   * REST call to get all the DEV update-sets based on the filters defined in Widget Options or system properties
+   * @returns Return the local updatesets
+   */
+  getDevUpdatesets: function () {
+    let result = [];
+
+    try {
+      if (!this.devUrl) return result;
+
+      let r = new sn_ws.RESTMessageV2('x_293046_updateset.Updateset Manager', 'Get Local Updateset');
+      r.setStringParameterNoEscape('base_url', this.devUrl);
+      r.setStringParameterNoEscape('record_limit', this.devRecordsLimit);
+      r.setStringParameterNoEscape('sys_parm_encoded_query', this.devEncodedQuery);
+
+      var response = r.execute();
+      var responseBody = response.getBody();
+
+      result = responseBody;
+
+    } catch (ex) {
+      var message = ex.message;
+      gs.error("VF: Error in getting local updatestes: " + message);
+      throw (message);
+    }
+
+    return result;
+  },
+
+  /**
+   * 
+   * @param {string} url : URL of the instance
+   * @param {string} encodedQuery : list of the DEV sys_ids concatinated
+   * @returns A list of all the update-sets based on DEV sys_ids
+   */
+  getRemoteUpdatesets: function (url, encodedQuery) {
+    let result = [];
+
+    if (!url) return result;
+
+    try {
+      var r = new sn_ws.RESTMessageV2('x_293046_updateset.Updateset Manager', 'GET Remote Updatesets');
+      r.setStringParameterNoEscape('base_url', url);
+      r.setStringParameterNoEscape('sys_parm_encoded_query', encodedQuery);
+      r.setStringParameterNoEscape('record_limit', this.devRecordsLimit);
+
+      var response = r.execute();
+      var responseBody = response.getBody();
+      result = responseBody;
+
+    } catch (ex) {
+      var message = ex.message;
+      gs.error("VF: Error in getting local updatestes: " + message);
+      throw (message);
+    }
+
+    return result;
+  },
+
+  type: 'UpdatesetHelper'
+};
+
+
+]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2023-05-28 01:31:40</sys_created_on>
+        <sys_id>0a064d0a474b65101955b1a8536d433b</sys_id>
+        <sys_mod_count>18</sys_mod_count>
+        <sys_name>UpdatesetHelper</sys_name>
+        <sys_package display_value="Updateset Management" source="x_293046_updateset">b0a3e5714747e1101955b1a8536d43eb</sys_package>
+        <sys_policy>read</sys_policy>
+        <sys_scope display_value="Updateset Management">b0a3e5714747e1101955b1a8536d43eb</sys_scope>
+        <sys_update_name>sys_script_include_0a064d0a474b65101955b1a8536d433b</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2023-05-31 04:40:19</sys_updated_on>
+    </sys_script_include>
+</record_update>

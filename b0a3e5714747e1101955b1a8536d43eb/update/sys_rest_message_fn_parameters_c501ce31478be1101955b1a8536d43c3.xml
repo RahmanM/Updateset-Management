@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_rest_message_fn_parameters">
+    <sys_rest_message_fn_parameters action="INSERT_OR_UPDATE">
+        <name>sys_parm_encoded_query</name>
+        <rest_message_function display_value="Get Local Updateset">9ec4f531470be1101955b1a8536d43c4</rest_message_function>
+        <sys_class_name>sys_rest_message_fn_parameters</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2023-05-27 11:06:47</sys_created_on>
+        <sys_id>c501ce31478be1101955b1a8536d43c3</sys_id>
+        <sys_mod_count>3</sys_mod_count>
+        <sys_name>sys_parm_encoded_query</sys_name>
+        <sys_package display_value="Updateset Management" source="x_293046_updateset">b0a3e5714747e1101955b1a8536d43eb</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Updateset Management">b0a3e5714747e1101955b1a8536d43eb</sys_scope>
+        <sys_update_name>sys_rest_message_fn_parameters_c501ce31478be1101955b1a8536d43c3</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2023-05-27 11:13:45</sys_updated_on>
+        <type>string</type>
+        <value>state=complete%5Esys_created_byINadmin,system</value>
+    </sys_rest_message_fn_parameters>
+</record_update>
