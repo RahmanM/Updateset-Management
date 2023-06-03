@@ -36,6 +36,22 @@ UpdatesetHelper.prototype = {
     }
 
     this.devEncodedQuery = encodedQuery ? encodedQuery : "state=complete";
+
+    this.logIfDebug("this.devUrl:" + this.devUrl);
+    this.logIfDebug("this.uatUrl:" + this.uatUrl);
+    this.logIfDebug("this.prodUrl:" + this.prodUrl);
+    this.logIfDebug("this.devEncodedQuery:" + this.devEncodedQuery);
+  },
+
+  /**
+   * Public function indicating of the widget/system properties etc are configured
+   */
+  isConfigured: function () {
+    if (!this.devUrl || !this.uatUrl) {
+      return false;
+    }
+
+    return true;
   },
 
   /**
@@ -105,7 +121,7 @@ UpdatesetHelper.prototype = {
     let localUpdatesets = this.getDevUpdatesets();
 
     // Get the remote update-sets for the sys_ids we identified for DEV
-    if (localUpdatesets) {
+    if (localUpdatesets && this.isValidJSON(localUpdatesets)) {
       let resultObj = JSON.parse(localUpdatesets);
       allUpdatesets.dev = resultObj.result;
 
@@ -121,6 +137,7 @@ UpdatesetHelper.prototype = {
     return allUpdatesets;
   },
 
+
   /**
    * Gets a list of updatesets from DEV and generates a LIST of encoded queries based on the name of the update-sets
    * The point to note is the encoded query is passed as URL and there is limit to the size of the URL request e.g. for Chrome it is 2024 chars
@@ -130,29 +147,29 @@ UpdatesetHelper.prototype = {
    * @param {*} updatesetList : Dev updatesets
    * @returns a list of encoded query requests
    */
-  encodeWithMaxLength : function (maxLength, updatesetList) {
-    const queryPrefix = "namesIN";
+  encodeWithMaxLength: function (maxLength, updatesetList) {
+    const queryPrefix = "nameIN";
     const encodedQueriesList = [];
     let itemsEncodedQuery = queryPrefix;
-  
+
     for (let i = 0; i < updatesetList.length; i++) {
       const updateset = updatesetList[i];
       const itemEncodedQuery = encodeURIComponent(updateset.name);
-  
+
       if (itemEncodedQuery.length + itemsEncodedQuery.length <= maxLength) {
-        itemsEncodedQuery += itemEncodedQuery;
+        itemsEncodedQuery += itemEncodedQuery + ",";
       } else {
         if (itemsEncodedQuery.length > queryPrefix.length) {
-            encodedQueriesList.push(itemsEncodedQuery);
+          encodedQueriesList.push(itemsEncodedQuery);
         }
-        itemsEncodedQuery = queryPrefix + itemEncodedQuery;
+        itemsEncodedQuery = queryPrefix + itemEncodedQuery + ",";
       }
     }
-  
+
     if (itemsEncodedQuery.length > queryPrefix.length) {
-      encodedQueriesList.push(itemsEncodedQuery);
+      encodedQueriesList.push(itemsEncodedQuery.trim(","));
     }
-  
+
     return encodedQueriesList;
   },
 
@@ -161,13 +178,14 @@ UpdatesetHelper.prototype = {
    * @param {array of string} encodedQueryList : list of encoded query with specified max lenght
    * @returns : a flat array of UAT updatesets.
    */
-  getBatchUatUpdatesets : function(encodedQueryList){
+  getBatchUatUpdatesets: function (encodedQueryList) {
     let batchResult = [];
 
     encodedQueryList.forEach(encodedQuery => {
-      let uatResultJson = this.getUatUpdatesets(encodedQuery);
+      this.logIfDebug(encodedQuery);
 
-      if (uatResultJson) {
+      let uatResultJson = this.getUatUpdatesets(encodedQuery);
+      if (uatResultJson && this.isValidJSON(uatResultJson)) {
         let uatResultObj = JSON.parse(uatResultJson);
         var uat = uatResultObj.result;
         batchResult.push(uat);
@@ -178,22 +196,24 @@ UpdatesetHelper.prototype = {
     return flatArray;
   },
 
-    /**
-   * This function does one or more REST calls to get Prod update-sets based on the number of items in encodedQueryList
-   * @param {array of string} encodedQueryList : list of encoded query with specified max length
-   * @returns : a flat array of Prod updatesets.
-   */
-  getBatchProdUpdatesets : function(encodedQueryList){
+  /**
+ * This function does one or more REST calls to get Prod update-sets based on the number of items in encodedQueryList
+ * @param {array of string} encodedQueryList : list of encoded query with specified max length
+ * @returns : a flat array of Prod updatesets.
+ */
+  getBatchProdUpdatesets: function (encodedQueryList) {
     let batchResult = []; // this will be a parent array with two or more child arrays that will contain the update-sets
 
     encodedQueryList.forEach(encodedQuery => {
+      this.logIfDebug(encodedQuery);
+
       let prodResultJson = this.getProdUpdatesets(encodedQuery);
-      if (prodResultJson) {
+      if (prodResultJson && this.isValidJSON(prodResultJson)) {
         let prodResultObj = JSON.parse(prodResultJson);
         var prod = prodResultObj.result;
         batchResult.push(prod);
       }
-      
+
     });
 
     let flatArray = [].concat(...batchResult);;
@@ -214,11 +234,11 @@ UpdatesetHelper.prototype = {
     return result;
   },
 
-   /**
-   * Returns Prod updatesets for one request
-   * @param {string} encodedQuery 
-   * @returns Returns the list of updatesets for one request based on encodedQuery
-   */
+  /**
+  * Returns Prod updatesets for one request
+  * @param {string} encodedQuery 
+  * @returns Returns the list of updatesets for one request based on encodedQuery
+  */
   getProdUpdatesets: function (encodedQuery) {
     let result = [];
 
@@ -244,13 +264,21 @@ UpdatesetHelper.prototype = {
       r.setStringParameterNoEscape('sys_parm_encoded_query', this.devEncodedQuery);
 
       var response = r.execute();
-      var responseBody = response.getBody();
 
-      result = responseBody;
+      if (!response.haveError()) {
+        result = response.getBody();
+        this.logIfDebug("DEV:result: " + result);
+      } else {
+        this.throwKnownError(
+          gs.getMessage("There was error while retrieving the local updatesets. The error has been logged. Please try again."),
+          response.getErrorMessage()
+        );
+      }
+
 
     } catch (ex) {
       var message = ex.message;
-      gs.error("VF: Error in getting local updatestes: " + message);
+      gs.error(gs.getMessage("VF: Error in getting local updatestes: " + message));
       throw (message);
     }
 
@@ -276,16 +304,59 @@ UpdatesetHelper.prototype = {
       r.setStringParameterNoEscape('record_limit', this.devRecordsLimit);
 
       var response = r.execute();
-      var responseBody = response.getBody();
-      result = responseBody;
+
+      if (!response.haveError()) {
+        result = response.getBody();
+        this.logIfDebug("Remote:result: " + result);
+      } else {
+        this.throwKnownError(
+          gs.getMessage("There was error while retrieving the local updatesets. The error has been logged. Please try again."),
+          response.getErrorMessage()
+        );
+      }
 
     } catch (ex) {
-      var message = ex.message;
+      var message = ex.message || ex;
       gs.error("VF: Error in getting local updatestes: " + message);
-      throw (message);
+      throw new Error(ex);
     }
 
     return result;
+  },
+
+  logError : function(error){
+    if(error){
+      gs.error("VF: " + error);
+    }
+  },
+
+  throwKnownError : function(message, errorDetails){
+    
+    if(errorDetails){
+      this.logError(message + "\n\n" + errorDetails);
+    }
+
+    throw new Error(message); 
+  },
+
+  /**
+   * Validate if JSON string is valid else throw error
+   * @param {json string} jsonString 
+   * @returns 
+   */
+  isValidJSON : function (jsonString) {
+    try {
+      JSON.parse(jsonString);
+      return true;
+    } catch (error) {
+      this.throwKnownError(
+        gs.getMessage("There was error while retrieving the data from the server. The error has been logged, please try again")
+      , "Unable to parse the JSON response: " + error.message || error)
+    }
+  },
+
+  logIfDebug : function(message){
+    gs.info("VF: " + message);
   },
 
   type: 'UpdatesetHelper'
@@ -297,13 +368,13 @@ UpdatesetHelper.prototype = {
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2023-05-28 01:31:40</sys_created_on>
         <sys_id>0a064d0a474b65101955b1a8536d433b</sys_id>
-        <sys_mod_count>31</sys_mod_count>
+        <sys_mod_count>61</sys_mod_count>
         <sys_name>UpdatesetHelper</sys_name>
         <sys_package display_value="Updateset Management" source="x_293046_updateset">b0a3e5714747e1101955b1a8536d43eb</sys_package>
         <sys_policy>read</sys_policy>
         <sys_scope display_value="Updateset Management">b0a3e5714747e1101955b1a8536d43eb</sys_scope>
         <sys_update_name>sys_script_include_0a064d0a474b65101955b1a8536d433b</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2023-06-03 01:14:05</sys_updated_on>
+        <sys_updated_on>2023-06-03 12:56:13</sys_updated_on>
     </sys_script_include>
 </record_update>
