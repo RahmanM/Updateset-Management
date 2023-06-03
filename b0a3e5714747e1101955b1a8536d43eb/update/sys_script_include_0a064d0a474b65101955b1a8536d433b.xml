@@ -7,8 +7,7 @@
         <client_callable>false</client_callable>
         <description/>
         <name>UpdatesetHelper</name>
-        <script><![CDATA[
-var UpdatesetHelper = Class.create();
+        <script><![CDATA[var UpdatesetHelper = Class.create();
 UpdatesetHelper.prototype = {
 
   devUrl: '',
@@ -66,18 +65,22 @@ UpdatesetHelper.prototype = {
     for (let i = 0; i < dev.length; i++) {
       const joinedUpdatesets = {
         devUpdateset: dev[i],
-        uatUpdateset: null,
-        prodUpdateset: null
+        uatUpdatesetLocal: null,
+        uatUpdatesetRemote: null,
+        prodUpdatesetLocal: null,
+        prodUpdatesetRemote: null
       };
 
-      const uatMatch = uat.find(task => task.remote_sys_id === dev[i].sys_id);
+      const uatMatch = uat.filter(updateset => updateset.name === dev[i].name);
       if (uatMatch) {
-        joinedUpdatesets.uatUpdateset = uatMatch;
+        joinedUpdatesets.uatUpdatesetLocal = uatMatch.find(us => !us.update_source) || null;
+        joinedUpdatesets.uatUpdatesetRemote = uatMatch.find(us => us.update_source) || null;
       }
 
-      const prodMatch = prod.find(task => task.remote_sys_id === dev[i].sys_id);
+      const prodMatch = prod.filter(updateset => updateset.name === dev[i].name);
       if (prodMatch) {
-        joinedUpdatesets.prodUpdateset = prodMatch;
+        joinedUpdatesets.prodUpdatesetLocal = prodMatch.find(us => !us.update_source) || null;
+        joinedUpdatesets.prodUpdatesetRemote = prodMatch.find(us => us.update_source) || null;
       }
 
       result.push(joinedUpdatesets);
@@ -88,7 +91,7 @@ UpdatesetHelper.prototype = {
 
   /**
    * Returns all the update-sets for DEV, UAT and Prod unprocessed.
-   * UAT and PROD update-sets are filtered based on the sys_ids of the DEV
+   * UAT and PROD update-sets are filtered based on the names of the DEV
    * @returns 
    */
   processUpdateSetsForAllEnvironments: function () {
@@ -106,27 +109,102 @@ UpdatesetHelper.prototype = {
       let resultObj = JSON.parse(localUpdatesets);
       allUpdatesets.dev = resultObj.result;
 
-      let sysIds = resultObj.result.map((item) => item.sys_id);
-      let encodedQuery = "remote_sys_idIN" + sysIds.join();
+      const maxUrlLength = 1700;
+      let encodedQueryList = this.encodeWithMaxLength(maxUrlLength, allUpdatesets.dev);
 
-      // Get uat updatesets
-      let uatResultJson = this.getUatUpdatesets(encodedQuery);
-      if (uatResultJson) {
-        let uatResultObj = JSON.parse(uatResultJson);
-        allUpdatesets.uat = uatResultObj.result;
-      }
+      allUpdatesets.uat = this.getBatchUatUpdatesets(encodedQueryList);
 
-      // Get prod updatesets
-      let prodResultJson = this.getProdUpdatesets(encodedQuery);
-      if (prodResultJson) {
-        let prodResultObj = JSON.parse(prodResultJson);
-        allUpdatesets.prod = prodResultObj.result;
-      }
+      allUpdatesets.prod = this.getBatchProdUpdatesets(encodedQueryList);
+
     }
 
     return allUpdatesets;
   },
 
+  /**
+   * Gets a list of updatesets from DEV and generates a LIST of encoded queries based on the name of the update-sets
+   * The point to note is the encoded query is passed as URL and there is limit to the size of the URL request e.g. for Chrome it is 2024 chars
+   * so this function generates 1 or more encoded query based on the max length value specified
+   * 
+   * @param {integer} maxLength : max length of the encoded query for one request
+   * @param {*} updatesetList : Dev updatesets
+   * @returns a list of encoded query requests
+   */
+  encodeWithMaxLength : function (maxLength, updatesetList) {
+    const queryPrefix = "namesIN";
+    const encodedQueriesList = [];
+    let itemsEncodedQuery = queryPrefix;
+  
+    for (let i = 0; i < updatesetList.length; i++) {
+      const updateset = updatesetList[i];
+      const itemEncodedQuery = encodeURIComponent(updateset.name);
+  
+      if (itemEncodedQuery.length + itemsEncodedQuery.length <= maxLength) {
+        itemsEncodedQuery += itemEncodedQuery;
+      } else {
+        if (itemsEncodedQuery.length > queryPrefix.length) {
+            encodedQueriesList.push(itemsEncodedQuery);
+        }
+        itemsEncodedQuery = queryPrefix + itemEncodedQuery;
+      }
+    }
+  
+    if (itemsEncodedQuery.length > queryPrefix.length) {
+      encodedQueriesList.push(itemsEncodedQuery);
+    }
+  
+    return encodedQueriesList;
+  },
+
+  /**
+   * This function does one or more REST calls to get UAT update-sets based on the number of items in encodedQueryList
+   * @param {array of string} encodedQueryList : list of encoded query with specified max lenght
+   * @returns : a flat array of UAT updatesets.
+   */
+  getBatchUatUpdatesets : function(encodedQueryList){
+    let batchResult = [];
+
+    encodedQueryList.forEach(encodedQuery => {
+      let uatResultJson = this.getUatUpdatesets(encodedQuery);
+
+      if (uatResultJson) {
+        let uatResultObj = JSON.parse(uatResultJson);
+        var uat = uatResultObj.result;
+        batchResult.push(uat);
+      }
+    });
+
+    let flatArray = [].concat(...batchResult);;
+    return flatArray;
+  },
+
+    /**
+   * This function does one or more REST calls to get Prod update-sets based on the number of items in encodedQueryList
+   * @param {array of string} encodedQueryList : list of encoded query with specified max length
+   * @returns : a flat array of Prod updatesets.
+   */
+  getBatchProdUpdatesets : function(encodedQueryList){
+    let batchResult = []; // this will be a parent array with two or more child arrays that will contain the update-sets
+
+    encodedQueryList.forEach(encodedQuery => {
+      let prodResultJson = this.getProdUpdatesets(encodedQuery);
+      if (prodResultJson) {
+        let prodResultObj = JSON.parse(prodResultJson);
+        var prod = prodResultObj.result;
+        batchResult.push(prod);
+      }
+      
+    });
+
+    let flatArray = [].concat(...batchResult);;
+    return flatArray; // contact all child arrays as one flat array
+  },
+
+  /**
+   * Returns UAT updatesets for one request
+   * @param {string} encodedQuery 
+   * @returns Returns the list of updatesets for one request based on encodedQuery
+   */
   getUatUpdatesets: function (encodedQuery) {
     let result = [];
 
@@ -136,6 +214,11 @@ UpdatesetHelper.prototype = {
     return result;
   },
 
+   /**
+   * Returns Prod updatesets for one request
+   * @param {string} encodedQuery 
+   * @returns Returns the list of updatesets for one request based on encodedQuery
+   */
   getProdUpdatesets: function (encodedQuery) {
     let result = [];
 
@@ -155,7 +238,7 @@ UpdatesetHelper.prototype = {
     try {
       if (!this.devUrl) return result;
 
-      let r = new sn_ws.RESTMessageV2('x_293046_updateset.Updateset Manager', 'Get Local Updateset');
+      let r = new sn_ws.RESTMessageV2('x_293046_updateset.Updateset Management', 'Get Local Updateset');
       r.setStringParameterNoEscape('base_url', this.devUrl);
       r.setStringParameterNoEscape('record_limit', this.devRecordsLimit);
       r.setStringParameterNoEscape('sys_parm_encoded_query', this.devEncodedQuery);
@@ -177,7 +260,7 @@ UpdatesetHelper.prototype = {
   /**
    * 
    * @param {string} url : URL of the instance
-   * @param {string} encodedQuery : list of the DEV sys_ids concatinated
+   * @param {string} encodedQuery : list of the DEV sys_ids concatenated
    * @returns A list of all the update-sets based on DEV sys_ids
    */
   getRemoteUpdatesets: function (url, encodedQuery) {
@@ -186,9 +269,10 @@ UpdatesetHelper.prototype = {
     if (!url) return result;
 
     try {
-      var r = new sn_ws.RESTMessageV2('x_293046_updateset.Updateset Manager', 'GET Remote Updatesets');
+      var r = new sn_ws.RESTMessageV2('x_293046_updateset.Updateset Management', 'GET Remote Updatesets');
       r.setStringParameterNoEscape('base_url', url);
-      r.setStringParameterNoEscape('sys_parm_encoded_query', encodedQuery);
+      r.setStringParameterNoEscape('fields', 'name,state,sys_id,remote_sys_id,update_source,parent');
+      r.setStringParameterNoEscape('encoded_query', encodedQuery);
       r.setStringParameterNoEscape('record_limit', this.devRecordsLimit);
 
       var response = r.execute();
@@ -213,13 +297,13 @@ UpdatesetHelper.prototype = {
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2023-05-28 01:31:40</sys_created_on>
         <sys_id>0a064d0a474b65101955b1a8536d433b</sys_id>
-        <sys_mod_count>18</sys_mod_count>
+        <sys_mod_count>31</sys_mod_count>
         <sys_name>UpdatesetHelper</sys_name>
         <sys_package display_value="Updateset Management" source="x_293046_updateset">b0a3e5714747e1101955b1a8536d43eb</sys_package>
         <sys_policy>read</sys_policy>
         <sys_scope display_value="Updateset Management">b0a3e5714747e1101955b1a8536d43eb</sys_scope>
         <sys_update_name>sys_script_include_0a064d0a474b65101955b1a8536d433b</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2023-05-31 04:40:19</sys_updated_on>
+        <sys_updated_on>2023-06-03 01:14:05</sys_updated_on>
     </sys_script_include>
 </record_update>

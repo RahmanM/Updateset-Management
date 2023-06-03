@@ -6,7 +6,7 @@
         <basic_auth_profile display_value="Updateset Management">0030b1b547c7e1101955b1a8536d43dd</basic_auth_profile>
         <basic_auth_user/>
         <description/>
-        <name>Updateset Manager</name>
+        <name>Updateset Management</name>
         <oauth2_profile/>
         <protocol_name/>
         <rest_endpoint>https://dev86854.service-now.com</rest_endpoint>
@@ -14,14 +14,14 @@
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2023-05-27 09:52:59</sys_created_on>
         <sys_id>8f7de9fd4787e1101955b1a8536d4302</sys_id>
-        <sys_mod_count>2</sys_mod_count>
-        <sys_name>Updateset Manager</sys_name>
+        <sys_mod_count>3</sys_mod_count>
+        <sys_name>Updateset Management</sys_name>
         <sys_package display_value="Updateset Management" source="x_293046_updateset">b0a3e5714747e1101955b1a8536d43eb</sys_package>
         <sys_policy/>
         <sys_scope display_value="Updateset Management">b0a3e5714747e1101955b1a8536d43eb</sys_scope>
         <sys_update_name>sys_rest_message_8f7de9fd4787e1101955b1a8536d4302</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2023-05-27 10:13:11</sys_updated_on>
+        <sys_updated_on>2023-06-01 04:54:42</sys_updated_on>
         <use_basic_auth>false</use_basic_auth>
         <use_mutual_auth>false</use_mutual_auth>
     </sys_rest_message>

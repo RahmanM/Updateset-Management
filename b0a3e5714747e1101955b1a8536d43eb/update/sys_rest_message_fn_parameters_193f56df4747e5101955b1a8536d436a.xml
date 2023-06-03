@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?><record_update table="sys_rest_message_fn_parameters">
     <sys_rest_message_fn_parameters action="INSERT_OR_UPDATE">
-        <name>sys_parm_encoded_query</name>
-        <rest_message_function display_value="Get Local Updateset">9ec4f531470be1101955b1a8536d43c4</rest_message_function>
+        <name>encoded_query</name>
+        <rest_message_function display_value="GET Remote Updatesets">4420357147c7e1101955b1a8536d43b1</rest_message_function>
         <sys_class_name>sys_rest_message_fn_parameters</sys_class_name>
         <sys_created_by>admin</sys_created_by>
-        <sys_created_on>2023-05-27 11:06:47</sys_created_on>
-        <sys_id>c501ce31478be1101955b1a8536d43c3</sys_id>
-        <sys_mod_count>4</sys_mod_count>
-        <sys_name>sys_parm_encoded_query</sys_name>
+        <sys_created_on>2023-06-01 05:09:35</sys_created_on>
+        <sys_id>193f56df4747e5101955b1a8536d436a</sys_id>
+        <sys_mod_count>2</sys_mod_count>
+        <sys_name>encoded_query</sys_name>
         <sys_package display_value="Updateset Management" source="x_293046_updateset">b0a3e5714747e1101955b1a8536d43eb</sys_package>
         <sys_policy/>
         <sys_scope display_value="Updateset Management">b0a3e5714747e1101955b1a8536d43eb</sys_scope>
-        <sys_update_name>sys_rest_message_fn_parameters_c501ce31478be1101955b1a8536d43c3</sys_update_name>
+        <sys_update_name>sys_rest_message_fn_parameters_193f56df4747e5101955b1a8536d436a</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2023-06-02 08:58:43</sys_updated_on>
+        <sys_updated_on>2023-06-01 05:13:48</sys_updated_on>
         <type>string</type>
-        <value>state=complete</value>
+        <value>nameIN%28VF%29%20Parent%20batch%20test%2C%28VF%29%20update-set%201</value>
     </sys_rest_message_fn_parameters>
 </record_update>
