@@ -116,6 +116,10 @@
     color: darkred;
   }
 
+  .colour-pink {
+    color: deeppink;
+  }
+
   .right-aligned-btn{
     float: right;
     margin-top: -3px;
@@ -189,9 +193,8 @@
 			exists: (updateSetResult.uatUpdatesetLocal || updateSetResult.uatUpdatesetRemote) ? 'Yes' : 'No',
 			committed: ((updateSetResult.uatUpdatesetLocal && updateSetResult.uatUpdatesetLocal.state == 'Committed') ||
 				(updateSetResult.uatUpdatesetRemote && updateSetResult.uatUpdatesetRemote.state == 'Committed')) ? 'Yes' : 'No',
-			localState: updateSetResult.uatUpdatesetLocal ? updateSetResult.uatUpdatesetLocal.state : 'N/A',
-			remoteState: updateSetResult.uatUpdatesetRemote ? updateSetResult.uatUpdatesetRemote.state : 'N/A',
-			source: updateSetResult.uatUpdatesetRemote ? updateSetResult.uatUpdatesetRemote.update_source : ''
+			source: updateSetResult.uatUpdatesetRemote ? updateSetResult.uatUpdatesetRemote.update_source : '',
+			hasRemoteAndLocal : (updateSetResult.uatUpdatesetRemote && updateSetResult.uatUpdatesetLocal) ? 'Yes' : 'No'
 		}
 
 		// Prod updateset
@@ -199,9 +202,8 @@
 			exists: (updateSetResult.prodUpdatesetLocal || updateSetResult.prodUpdatesetRemote) ? 'Yes' : 'No',
 			committed: ((updateSetResult.prodUpdatesetLocal && updateSetResult.prodUpdatesetLocal.state == 'Committed') ||
 				(updateSetResult.prodUpdatesetRemote && updateSetResult.prodUpdatesetRemote.state == 'Committed')) ? 'Yes' : 'No',
-			localState: updateSetResult.prodUpdatesetLocal ? updateSetResult.prodUpdatesetLocal.state : 'N/A',
-			remoteState: updateSetResult.prodUpdatesetRemote ? updateSetResult.prodUpdatesetRemote.state : 'N/A',
-			source: updateSetResult.prodUpdatesetRemote ? updateSetResult.prodUpdatesetRemote.update_source : ''
+			source: updateSetResult.prodUpdatesetRemote ? updateSetResult.prodUpdatesetRemote.update_source : '',
+			hasRemoteAndLocal : (updateSetResult.prodUpdatesetRemote && updateSetResult.prodUpdatesetLocal) ? 'Yes' : 'No'
 		}
 
 		formattedResults.push(formattedResult);
@@ -217,14 +219,14 @@
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2023-05-27 09:18:34</sys_created_on>
         <sys_id>5118e1714787e1101955b1a8536d43b4</sys_id>
-        <sys_mod_count>121</sys_mod_count>
+        <sys_mod_count>134</sys_mod_count>
         <sys_name>Compare updatesets</sys_name>
         <sys_package display_value="Updateset Management" source="x_293046_updateset">b0a3e5714747e1101955b1a8536d43eb</sys_package>
         <sys_policy/>
         <sys_scope display_value="Updateset Management">b0a3e5714747e1101955b1a8536d43eb</sys_scope>
         <sys_update_name>sp_widget_5118e1714787e1101955b1a8536d43b4</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2023-06-03 00:52:44</sys_updated_on>
+        <sys_updated_on>2023-06-03 02:23:33</sys_updated_on>
         <template><![CDATA[<div
   ng-init="c.selectedOption= 'all'"
   class="panel panel-default"
@@ -304,39 +306,27 @@
     <thead class="thead-dark">
       <tr>
         <th class="dev-header" colspan="2">
-          <h2>DEV</h2>
+          <h2>${DEV}</h2>
         </th>
-        <th class="uat-header" colspan="5">
-          <h2>UAT</h2>
+        <th class="uat-header" colspan="3">
+          <h2>${UAT}</h2>
         </th>
-        <th class="prod-header" colspan="5">
-          <h2>PROD</h2>
+        <th class="prod-header" colspan="3">
+          <h2>${PROD}</h2>
         </th>
       </tr>
       <tr>
-        <th class="vertical-header dev-subheader">Name</th>
-        <!-- <th class="vertical-header dev-subheader left-aligned">State</th> -->
-        <th class="vertical-header dev-subheader">Created By</th>
+        <th class="vertical-header dev-subheader">${Name}</th>
+        <th class="vertical-header dev-subheader">${Created by}</th>
 
-        <th class="vertical-header uat-subheader">Exists?</th>
-        <th class="vertical-header uat-subheader">Committed?</th>
-        <th class="vertical-header uat-subheader left-aligned">
-          State (Remote)
-        </th>
-        <th class="vertical-header uat-subheader left-aligned">
-          State (Local)
-        </th>
-        <th class="vertical-header uat-subheader left-aligned">Source</th>
+        <th class="vertical-header uat-subheader">${Exists?}</th>
+        <th class="vertical-header uat-subheader">${Committed?}</th>
+        <th class="vertical-header uat-subheader left-aligned">${Multiple sources}</th>
 
-        <th class="vertical-header prod-subheader">Exists?</th>
-        <th class="vertical-header prod-subheader">Committed?</th>
-        <th class="vertical-header prod-subheader left-aligned">
-          State (Remote)
-        </th>
-        <th class="vertical-header prod-subheader left-aligned">
-          State (Local)
-        </th>
-        <th class="vertical-header prod-subheader left-aligned">Source</th>
+        <th class="vertical-header prod-subheader">${Exists?}</th>
+        <th class="vertical-header prod-subheader">${Committed?}</th>
+        <th class="vertical-header prod-subheader left-aligned">${Multiple sources}</th>
+ 
       </tr>
     </thead>
     <tbody>
@@ -346,7 +336,6 @@
       >
         <!-- DEV -->
         <td class="dev-subheader">{{mergedUpdateset.devUpdateset.name}}</td>
-        <!-- <td class="dev-subheader">{{mergedUpdateset.devUpdateset.state}}</td> -->
         <td class="dev-subheader">
           {{mergedUpdateset.devUpdateset.sys_created_by}}
         </td>
@@ -379,18 +368,11 @@
         </td>
 
         <td class="uat-subheader left-aligned">
-          <!-- local state -->
-          {{ mergedUpdateset.uatUpdateset.remoteState}}
-        </td>
+          <!-- Multiple updatesets -->
+          <i ng-show="mergedUpdateset.uatUpdateset.hasRemoteAndLocal == 'Yes'" class="colour-pink fa fa-exclamation-circle"></i>
+          <i ng-show="mergedUpdateset.uatUpdateset.hasRemoteAndLocal == 'No'" class="colour-darkred fa fa-times-circle" ></i>
 
-        <td class="uat-subheader left-aligned">
-          <!-- remote state -->
-          {{ mergedUpdateset.uatUpdateset.localState}}
-        </td>
-
-        <td class="uat-subheader left-aligned">
-          <!-- source -->
-          {{ mergedUpdateset.uatUpdateset.source}}
+          {{ mergedUpdateset.uatUpdateset.hasRemoteAndLocal}}
         </td>
 
         <!-- PROD -->
@@ -420,18 +402,11 @@
         </td>
 
         <td class="prod-subheader left-aligned">
-          <!-- local state -->
-          {{ mergedUpdateset.prodUpdateset.remoteState}}
-        </td>
+          <!-- Multiple updatesets -->
+          <i ng-show="mergedUpdateset.prodUpdateset.hasRemoteAndLocal == 'Yes'" class="colour-pink fa fa-exclamation-circle"></i>
+          <i ng-show="mergedUpdateset.prodUpdateset.hasRemoteAndLocal == 'No'" class="colour-darkred fa fa-times-circle" ></i>
 
-        <td class="prod-subheader left-aligned">
-          <!-- remote state -->
-          {{ mergedUpdateset.prodUpdateset.localState}}
-        </td>
-
-        <td class="prod-subheader left-aligned">
-          <!-- source -->
-          {{ mergedUpdateset.prodUpdateset.source}}
+          {{ mergedUpdateset.prodUpdateset.hasRemoteAndLocal}}
         </td>
       </tr>
     </tbody>
