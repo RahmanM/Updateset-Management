@@ -6,15 +6,15 @@
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2023-06-01 05:09:35</sys_created_on>
         <sys_id>193f56df4747e5101955b1a8536d436a</sys_id>
-        <sys_mod_count>2</sys_mod_count>
+        <sys_mod_count>4</sys_mod_count>
         <sys_name>encoded_query</sys_name>
         <sys_package display_value="Updateset Management" source="x_293046_updateset">b0a3e5714747e1101955b1a8536d43eb</sys_package>
         <sys_policy/>
         <sys_scope display_value="Updateset Management">b0a3e5714747e1101955b1a8536d43eb</sys_scope>
         <sys_update_name>sys_rest_message_fn_parameters_193f56df4747e5101955b1a8536d436a</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2023-06-01 05:13:48</sys_updated_on>
+        <sys_updated_on>2023-06-03 11:58:22</sys_updated_on>
         <type>string</type>
-        <value>nameIN%28VF%29%20Parent%20batch%20test%2C%28VF%29%20update-set%201</value>
+        <value>nameIN(VF)%20STRY0199040%20-%20CyberArk%20move%20to%20Cloud,(VF)%20FF%20HRSD%20EOT%20Offboarding%20-%20Phase%201%20Remediation%20(BATCH),(VF)%20Paris%20Upgrade%202%20Revert%20to%20Baseline,(VF)%20STRY0204363%20-%20Remove%20all%20documents%20from%20HR%20Tasks%20(HRC),(VF)%20FFMA%20-%20Variable%20Set%20for%20Teams%20Recording,(VF)%20Catalog%20%3A%20Items%20and%20Models,(VF)%20STRY0206607%20-%20Unique%20certificate%20form%20update%20%5BCERT%20LE%5D,(VF)%20STRY0198221%20-%20PC%26I%20group%20access%20(HR%20WORKSPACE),(VF)%20FF%20HRSD%20EOT%20Offboarding%20-%20Sprint%201%20-%20Batch,(VF)%20STRY0203632%20-%20Security%20Audit%20message%20to%20capture%20changes%20of%20opened%20for,(VF)%20HRSD%20EOT%20Onboarding%20-%20Sprint%202%20(HR%20LIFECYCLE%20ENTERPRISE),(VF)%20EPIC0024109%20-%20WSD%20ATFs%20for%20Service%20Catalog%20updates%20(WCM),(VF)%20STRY0200471%20-%20Create%20new%20list%20views%20open%20alerts%20(Agent%20Workspace),(VF)%20Golden%20Source%20Jira%20handler%201.0,(VF)%20WSD%20-%20Sprint%201%20-%20%5BWORKPLACE%20SAFETY%20MANAGEMENT%5D,(VF)%20EPIC0022592%3A%20REQ%2FMail%20mods%20%5BG%5D%201.0,(VF)%20STRY0199667%20-%20WSD%20Catalog%20item%20update%20user%20criteria%20(WCM),(VF)%20FF%20HRSD%20EOT%20Offboarding%20-%20Remediation%20(HR%20Workspace)%201.0,(VF)%20Procurement%20Hardware%20Approval%20AssignmentGroup,(VF)%20EPIC0023929%20-%20Now%20mobile%20approval%20for%20CRs,</value>
     </sys_rest_message_fn_parameters>
 </record_update>
