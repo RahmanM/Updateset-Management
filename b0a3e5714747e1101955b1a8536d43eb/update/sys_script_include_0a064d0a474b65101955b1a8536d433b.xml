@@ -15,6 +15,8 @@ UpdatesetHelper.prototype = {
   prodUrl: '',
   devRecordsLimit: 0,
   devEncodedQuery: '',
+  debugMode : false,
+  knownConfigError : "There was error while retrieving the local updatesets. The error has been logged. Please check the log and if it is related to some missing configurations, please fix the configurations and try again.",
 
   /**
    * 
@@ -26,10 +28,11 @@ UpdatesetHelper.prototype = {
    */
   initialize: function (devUrl, uatUrl, prodUrl, maxRecordsLimit, encodedQuery) {
 
-    this.devUrl = devUrl ? devUrl : gs.getProperty('x_293046_updateset.DEV_Base_URL');
-    this.uatUrl = uatUrl ? uatUrl : gs.getProperty('x_293046_updateset.UAT_Base_URL');
-    this.prodUrl = prodUrl ? prodUrl : gs.getProperty('x_293046_updateset.Prod_Base_URL');
-    this.devRecordsLimit = maxRecordsLimit ? maxRecordsLimit : gs.getProperty('x_293046_updateset.dev_records_limit', 100);
+    this.devUrl = devUrl;
+    this.uatUrl = uatUrl;
+    this.prodUrl = prodUrl;
+    this.devRecordsLimit = maxRecordsLimit;
+    this.debugMode = gs.getProperty('x_293046_updateset.debug_mode', false);
 
     if (encodedQuery) {
       encodedQuery = encodeURIComponent(encodedQuery); // Apply URI encoding as REST needs i
@@ -89,13 +92,16 @@ UpdatesetHelper.prototype = {
 
       const uatMatch = uat.filter(updateset => updateset.name === dev[i].name);
       if (uatMatch) {
-        joinedUpdatesets.uatUpdatesetLocal = uatMatch.find(us => !us.update_source) || null;
+        // Find any committed or else any local or default to null
+        joinedUpdatesets.uatUpdatesetLocal = 
+            (uatMatch.find(us => !us.update_source && us.state == "Committed") || uatMatch.find(us => !us.update_source)) || null;
         joinedUpdatesets.uatUpdatesetRemote = uatMatch.find(us => us.update_source) || null;
       }
 
       const prodMatch = prod.filter(updateset => updateset.name === dev[i].name);
       if (prodMatch) {
-        joinedUpdatesets.prodUpdatesetLocal = prodMatch.find(us => !us.update_source) || null;
+        joinedUpdatesets.prodUpdatesetLocal = 
+            (prodMatch.find(us => !us.update_source && us.state == "Committed") || prodMatch.find(us => !us.update_source)) || null;
         joinedUpdatesets.prodUpdatesetRemote = prodMatch.find(us => us.update_source) || null;
       }
 
@@ -120,7 +126,7 @@ UpdatesetHelper.prototype = {
 
     let localUpdatesets = this.getDevUpdatesets();
 
-    // Get the remote update-sets for the sys_ids we identified for DEV
+    // Get the remote update-sets for the names we identified for DEV
     if (localUpdatesets && this.isValidJSON(localUpdatesets)) {
       let resultObj = JSON.parse(localUpdatesets);
       allUpdatesets.dev = resultObj.result;
@@ -160,7 +166,7 @@ UpdatesetHelper.prototype = {
         itemsEncodedQuery += itemEncodedQuery + ",";
       } else {
         if (itemsEncodedQuery.length > queryPrefix.length) {
-          encodedQueriesList.push(itemsEncodedQuery);
+          encodedQueriesList.push(itemsEncodedQuery.trim(","));
         }
         itemsEncodedQuery = queryPrefix + itemEncodedQuery + ",";
       }
@@ -192,7 +198,7 @@ UpdatesetHelper.prototype = {
       }
     });
 
-    let flatArray = [].concat(...batchResult);;
+    let flatArray = [].concat(...batchResult);
     return flatArray;
   },
 
@@ -216,7 +222,7 @@ UpdatesetHelper.prototype = {
 
     });
 
-    let flatArray = [].concat(...batchResult);;
+    let flatArray = [].concat(...batchResult);
     return flatArray; // contact all child arrays as one flat array
   },
 
@@ -270,7 +276,7 @@ UpdatesetHelper.prototype = {
         this.logIfDebug("DEV:result: " + result);
       } else {
         this.throwKnownError(
-          gs.getMessage("There was error while retrieving the local updatesets. The error has been logged. Please try again."),
+          gs.getMessage(this.knownConfigError),
           response.getErrorMessage()
         );
       }
@@ -278,7 +284,7 @@ UpdatesetHelper.prototype = {
 
     } catch (ex) {
       var message = ex.message;
-      gs.error(gs.getMessage("VF: Error in getting local updatestes: " + message));
+      gs.error(gs.getMessage("VF: Error in getting local Updatesets: " + message));
       throw (message);
     }
 
@@ -310,26 +316,32 @@ UpdatesetHelper.prototype = {
         this.logIfDebug("Remote:result: " + result);
       } else {
         this.throwKnownError(
-          gs.getMessage("There was error while retrieving the local updatesets. The error has been logged. Please try again."),
+          gs.getMessage(this.knownConfigError),
           response.getErrorMessage()
         );
       }
 
     } catch (ex) {
       var message = ex.message || ex;
-      gs.error("VF: Error in getting local updatestes: " + message);
+      gs.error("VF: Error in getting local Updatesets: " + message);
       throw new Error(ex);
     }
 
     return result;
   },
 
+  //
+  // Log the errors with prefix
+  // 
   logError : function(error){
     if(error){
       gs.error("VF: " + error);
     }
   },
 
+  //
+  // Log the known errors
+  //
   throwKnownError : function(message, errorDetails){
     
     if(errorDetails){
@@ -350,13 +362,18 @@ UpdatesetHelper.prototype = {
       return true;
     } catch (error) {
       this.throwKnownError(
-        gs.getMessage("There was error while retrieving the data from the server. The error has been logged, please try again")
-      , "Unable to parse the JSON response: " + error.message || error)
+        gs.getMessage(this.knownConfigError)
+      , "Unable to parse the JSON response: " + error.message || error);
     }
   },
 
+  //
+  // Log if debug is enabled
+  //
   logIfDebug : function(message){
-    gs.info("VF: " + message);
+    if(this.debugMode){
+      gs.info("VF: " + message);
+    }
   },
 
   type: 'UpdatesetHelper'
@@ -368,13 +385,13 @@ UpdatesetHelper.prototype = {
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2023-05-28 01:31:40</sys_created_on>
         <sys_id>0a064d0a474b65101955b1a8536d433b</sys_id>
-        <sys_mod_count>61</sys_mod_count>
+        <sys_mod_count>69</sys_mod_count>
         <sys_name>UpdatesetHelper</sys_name>
         <sys_package display_value="Updateset Management" source="x_293046_updateset">b0a3e5714747e1101955b1a8536d43eb</sys_package>
         <sys_policy>read</sys_policy>
         <sys_scope display_value="Updateset Management">b0a3e5714747e1101955b1a8536d43eb</sys_scope>
         <sys_update_name>sys_script_include_0a064d0a474b65101955b1a8536d433b</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2023-06-03 12:56:13</sys_updated_on>
+        <sys_updated_on>2023-06-08 06:57:01</sys_updated_on>
     </sys_script_include>
 </record_update>
