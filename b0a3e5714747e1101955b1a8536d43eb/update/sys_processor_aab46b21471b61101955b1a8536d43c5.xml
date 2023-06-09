@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_processor">
+    <sys_processor action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <class_name/>
+        <description>Updateset management export bulk&#13;
+&#13;
+Note: This does not work due to Cross Scope issues. So currently relying on the "Bulk Download-Rename of Update Sets" update-set.</description>
+        <interactive>false</interactive>
+        <name>Updateset management export bulk</name>
+        <parameters/>
+        <params_endpoint/>
+        <path>updateset_management_export_bulk</path>
+        <path_endpoint/>
+        <require_csrf>false</require_csrf>
+        <roles>snc_internal</roles>
+        <script><![CDATA[(function process(g_request, g_response, g_processor) {
+
+	var sysidLocal = g_request.getParameter('sysparam_sys_id');
+	var fileName = g_request.getParameter('sysparam_file_name');
+	var source_table = g_request.getParameter('sysparam_table');
+
+	if( source_table == 'sys_update_set' ) {
+
+		var grUpdateSet = new GlideRecord('sys_update_set');
+		
+		if (grUpdateSet.get(sysidLocal)) {
+			
+			var grRetrievedUpdateSet = new GlideRecord('sys_remote_update_set');
+				grRetrievedUpdateSet.initialize();
+				grRetrievedUpdateSet.description = grUpdateSet.description;
+				grRetrievedUpdateSet.name = grUpdateSet.name;
+				grRetrievedUpdateSet.release_date = grUpdateSet.release_date;
+				grRetrievedUpdateSet.remote_sys_id = grUpdateSet.sys_id;
+				grRetrievedUpdateSet.application = grUpdateSet.application;
+				grRetrievedUpdateSet.state = "loaded";
+			
+			if( !fileName || fileName == '' ) {
+				fileName = grUpdateSet.getValue('name')+'.xml';
+			}
+
+			var grScope = new GlideRecord('sys_scope');
+				grScope.get(grUpdateSet.application);
+			
+			if (grScope.isValid()) {
+				grRetrievedUpdateSet.application_name = grScope.name;
+				grRetrievedUpdateSet.application_scope = grScope.scope;
+				grRetrievedUpdateSet.application_version = grScope.version;
+			}
+
+			var sysidRetrieved;
+
+			if (sysidRetrieved = grRetrievedUpdateSet.insert()) {
+
+				var grUpdateXML = new GlideRecord('sys_update_xml');
+				grUpdateXML.addQuery('update_set', sysidLocal);
+				grUpdateXML.query();
+
+				while(grUpdateXML.next()) {
+					grUpdateXML.remote_update_set = sysidRetrieved;
+					grUpdateXML.update_set = '';
+					grUpdateXML.insert();
+				}
+
+				var exporter = new x_293046_updateset.ExportBulkUpdatesets('sys_remote_update_set', sysidRetrieved);
+				if (fileName) {
+					exporter.setFileName(fileName);
+				}
+				exporter.addRelatedList('sys_update_xml', 'remote_update_set');
+				exporter.exportRecords(g_response);
+
+				grUpdateXML = new GlideRecord('sys_update_xml');
+				grUpdateXML.addQuery('remote_update_set', sysidRetrieved);
+				grUpdateXML.query();
+				grUpdateXML.deleteMultiple();
+				grRetrievedUpdateSet = new GlideRecord('sys_remote_update_set');
+				grRetrievedUpdateSet.get(sysidRetrieved);
+				grRetrievedUpdateSet.deleteRecord();
+			}
+		}
+	}
+
+	else if( source_table == 'sys_remote_update_set' ) {
+
+		if( !fileName || fileName == ''  ) {
+			var retrSet = new GlideRecord('sys_remote_update_set');
+			if( retrSet.get( sysidLocal) ) {
+				fileName = retrSet.getValue('name')+'.xml';
+			}
+		}
+
+		var exporter = new x_293046_updateset.ExportBulkUpdatesets('sys_remote_update_set', sysidLocal );
+		if (fileName) {
+			exporter.setFileName(fileName);
+		}
+		exporter.addRelatedList('sys_update_xml', 'remote_update_set');
+		exporter.exportRecords(g_response);
+	}
+
+})(g_request, g_response, g_processor);]]></script>
+        <sys_class_name>sys_processor</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2023-06-08 09:59:38</sys_created_on>
+        <sys_id>aab46b21471b61101955b1a8536d43c5</sys_id>
+        <sys_mod_count>2</sys_mod_count>
+        <sys_name>Updateset management export bulk</sys_name>
+        <sys_package display_value="Updateset Management" source="x_293046_updateset">b0a3e5714747e1101955b1a8536d43eb</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Updateset Management">b0a3e5714747e1101955b1a8536d43eb</sys_scope>
+        <sys_update_name>sys_processor_aab46b21471b61101955b1a8536d43c5</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2023-06-09 05:53:42</sys_updated_on>
+        <type>script</type>
+        <xframe_sameorigin>false</xframe_sameorigin>
+    </sys_processor>
+</record_update>

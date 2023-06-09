@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="sys_app_application">
+    <sys_app_application action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <category display_value="Administration">647e6524c0a80a080010856a87e15ce2</category>
+        <description>Compare DEV, UAT, Prod etc updatesets</description>
+        <device_type>browser</device_type>
+        <hint/>
+        <name/>
+        <order>100</order>
+        <roles>snc_internal</roles>
+        <sys_class_name>sys_app_application</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2023-06-05 10:43:26</sys_created_on>
+        <sys_domain>global</sys_domain>
+        <sys_domain_path>/</sys_domain_path>
+        <sys_id>f7b19cb04753e5101955b1a8536d43ab</sys_id>
+        <sys_mod_count>1</sys_mod_count>
+        <sys_name>Updateset managment</sys_name>
+        <sys_overrides/>
+        <sys_package display_value="Updateset Management" source="x_293046_updateset">b0a3e5714747e1101955b1a8536d43eb</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Updateset Management">b0a3e5714747e1101955b1a8536d43eb</sys_scope>
+        <sys_update_name>sys_app_application_f7b19cb04753e5101955b1a8536d43ab</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2023-06-05 10:48:57</sys_updated_on>
+        <title>Updateset managment</title>
+        <view_name/>
+    </sys_app_application>
+</record_update>
