@@ -11,16 +11,16 @@
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2023-05-27 11:00:04</sys_created_on>
         <sys_id>2a4ff9f5474be1101955b1a8536d437b</sys_id>
-        <sys_mod_count>1</sys_mod_count>
+        <sys_mod_count>4</sys_mod_count>
         <sys_name>x_293046_updateset.UAT_Base_URL</sys_name>
         <sys_package display_value="Updateset Management" source="x_293046_updateset">b0a3e5714747e1101955b1a8536d43eb</sys_package>
         <sys_policy/>
         <sys_scope display_value="Updateset Management">b0a3e5714747e1101955b1a8536d43eb</sys_scope>
         <sys_update_name>sys_properties_2a4ff9f5474be1101955b1a8536d437b</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2023-05-28 01:32:42</sys_updated_on>
+        <sys_updated_on>2023-06-10 02:21:01</sys_updated_on>
         <type>string</type>
-        <value>https://dev86854.service-now.com/</value>
+        <value/>
         <write_roles/>
     </sys_properties>
     <sys_translated_text action="delete_multiple" query="documentkey=2a4ff9f5474be1101955b1a8536d437b"/>
