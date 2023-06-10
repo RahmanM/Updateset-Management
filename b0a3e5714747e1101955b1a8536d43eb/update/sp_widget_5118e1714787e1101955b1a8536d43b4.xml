@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
     <sp_widget action="INSERT_OR_UPDATE">
         <category>custom</category>
-        <client_script><![CDATA[api.controller = function ($http, $filter) {
+        <client_script><![CDATA[api.controller = function ($filter) {
     /* widget controller */
     var c = this;
 
@@ -16,6 +16,8 @@
         if (!item) return false;
 
         // console.log(item);
+        //console.log(c.selectedOption, "selectedOption");
+
         var STATE_COMMITTED = "Yes";
 
         var result = false
@@ -225,7 +227,48 @@ th.vertical-header {
 
  }]]></link>
         <name>Compare updatesets</name>
-        <option_schema>[{"hint":"URL of the DEV environment","name":"dev_url","section":"Data","default_value":"https://dev50458.service-now.com/","label":"DEV Url","type":"string"},{"hint":"URL of the UAT or Test environment","name":"uat_url","section":"Data","default_value":"https://dev86854.service-now.com/","label":"UAT Url","type":"string"},{"hint":"URL of the PROD or Live environment","name":"prod_url","section":"Data","default_value":"https://dev86854.service-now.com/","label":"PROD Url","type":"string"},{"hint":"Encoded query to limit the number of updatesets to be searched. This is the encoded query to be applied to DEV update-sets. UAT and Prods are filtered based on DEV sys_ids","name":"encoded_query","section":"Data","default_value":"state=complete^sys_created_byINadmin,system","label":"Encoded query","type":"string"},{"hint":"Maximum number of records to return","name":"max_records_limit","section":"Data","default_value":"200","label":"Max records limit","type":"integer"}]</option_schema>
+        <option_schema>[
+    {
+        "hint": "URL of the DEV environment",
+        "name": "dev_url",
+        "section": "Data",
+        "default_value": "",
+        "label": "DEV Url",
+        "type": "string"
+    },
+    {
+        "hint": "URL of the UAT or Test environment",
+        "name": "uat_url",
+        "section": "Data",
+        "default_value": "",
+        "label": "UAT Url",
+        "type": "string"
+    },
+    {
+        "hint": "URL of the PROD or Live environment",
+        "name": "prod_url",
+        "section": "Data",
+        "default_value": "",
+        "label": "PROD Url",
+        "type": "string"
+    },
+    {
+        "hint": "Encoded query to limit the number of updatesets to be searched. This is the encoded query to be applied to DEV update-sets. UAT and Prods are filtered based on DEV sys_ids",
+        "name": "encoded_query",
+        "section": "Data",
+        "default_value": "state=complete^sys_created_byINadmin,system",
+        "label": "Encoded query",
+        "type": "string"
+    },
+    {
+        "hint": "Maximum number of records to return",
+        "name": "max_records_limit",
+        "section": "Data",
+        "default_value": "200",
+        "label": "Max records limit",
+        "type": "integer"
+    }
+]</option_schema>
         <public>false</public>
         <roles/>
         <script><![CDATA[(function () {
@@ -359,250 +402,23 @@ th.vertical-header {
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2023-05-27 09:18:34</sys_created_on>
         <sys_id>5118e1714787e1101955b1a8536d43b4</sys_id>
-        <sys_mod_count>282</sys_mod_count>
+        <sys_mod_count>317</sys_mod_count>
         <sys_name>Compare updatesets</sys_name>
         <sys_package display_value="Updateset Management" source="x_293046_updateset">b0a3e5714747e1101955b1a8536d43eb</sys_package>
         <sys_policy/>
         <sys_scope display_value="Updateset Management">b0a3e5714747e1101955b1a8536d43eb</sys_scope>
         <sys_update_name>sp_widget_5118e1714787e1101955b1a8536d43b4</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2023-06-09 05:46:56</sys_updated_on>
+        <sys_updated_on>2023-06-10 04:27:58</sys_updated_on>
         <template><![CDATA[<!--Validation and error section -->
-<div class="alert alert-warning" role="alert" ng-show="!data.isConfigured">
-  ${
-    If this is the first time you are viewing this page then please configure the DEV, UAT (Test), and Production environment Urls and other required configurations.
-    These settings can be configured either using this Widget instance Options or in the back-end using the required System Properties. Please navigate to "Updateset Management" application menu and configure the options.
-}
-</div>
-
-<div class="alert alert-warning" role="alert" ng-show="data.showError">
-  {{data.errors}}
-</div>
+<div ng-include="'validation-error-section'"></div>
 
 <div ng-show="data.isConfigured && !data.showError">
-  <!-- Filter section -->
-  <div
-    ng-init="c.selectedOption= 'all'"
-    class="panel panel-default"
-    style="
-      padding: 10px;
-      background-color: #fff;
-      box-shadow: 0 8px 12px -8px rgba(0, 0, 0, 0.3);
-      margin-bottom: 10px;
-    "
-  >
-    <div class="checkbox-inline">
-      <input
-        class="form-check-input"
-        type="radio"
-        ng-model="c.selectedOption"
-        name="inlineRadioOptions"
-        id="all"
-        value="all"
-        ng-change="c.onFilterChange(data.mergedUpdatesets, c.filterBySelectedOption)"
-      />
-      <label class="form-check-label" for="all">All</label>
-    </div>
-    <div class="checkbox-inline">
-      <input
-        class="form-check-input"
-        type="radio"
-        ng-model="c.selectedOption"
-        name="inlineRadioOptions"
-        id="uatCommitted"
-        value="uatCommitted"
-        ng-change="c.onFilterChange(data.mergedUpdatesets, c.filterBySelectedOption)"
-      />
-      <label class="form-check-label" for="uat1">UAT Committed</label>
-    </div>
-    <div class="checkbox-inline">
-      <input
-        class="form-check-input"
-        type="radio"
-        ng-model="c.selectedOption"
-        name="inlineRadioOptions"
-        id="uatUncommitted"
-        value="uatUncommitted"
-        ng-change="c.onFilterChange(data.mergedUpdatesets, c.filterBySelectedOption)"
-      />
-      <label class="form-check-label" for="inlineRadio2"
-        >UAT Un-committed</label
-      >
-    </div>
-    <div class="checkbox-inline">
-      <input
-        class="form-check-input"
-        type="radio"
-        ng-model="c.selectedOption"
-        name="inlineRadioOptions"
-        id="prodCommitted"
-        value="prodCommitted"
-        ng-change="c.onFilterChange(data.mergedUpdatesets, c.filterBySelectedOption)"
-      />
-      <label class="form-check-label" for="prod1">Prod Committed</label>
-    </div>
-    <div class="checkbox-inline">
-      <input
-        class="form-check-input"
-        type="radio"
-        ng-model="c.selectedOption"
-        name="inlineRadioOptions"
-        id="prodUncommitted"
-        value="prodUncommitted"
-        ng-change="c.onFilterChange(data.mergedUpdatesets, c.filterBySelectedOption)"
-      />
-      <label class="form-check-label" for="prod1">Prod Un-committed</label>
-    </div>
+  <!-- Filter section: which includes the filter option buttons and actions like download etc -->
+  <div ng-include="'filter-section'"></div>
 
-    <!-- <input ng-model="c.selectedOption" value="filterByName" style="width: 200px" class="form-control form-control-sm checkbox-inline" type="text" placeholder="Filter by name"> -->
-
-    <button class="btn btn-success right-aligned-btn hover-text" ng-click="c.exportTableToExcel('updates','update-sets')" >
-      <i class="fa fa-table" aria-hidden="true"></i>
-      <span class="tooltip-text left">Export to Excel</span>
-    </button>
-
-    <button ng-show="data.bulkDownloadRenameExists" class="btn btn-success right-aligned-btn hover-text margin-right-4" ng-click="c.exportUpdatesets()" >
-      <i class="fa fa-solid fa-download"></i>
-    <span class="tooltip-text left">Export to XML</span>
-
-  </button>
-
-  </div>
-
-  <!--Details section -->
-  <div>
-    <table id="update-sets" class="table">
-      <thead class="thead-dark">
-        <tr>
-          <th class="dev-header" colspan="2">
-            <h2>${DEV}</h2>
-          </th>
-          <th class="uat-header" colspan="3">
-            <h2>${UAT}</h2>
-          </th>
-          <th class="prod-header" colspan="3">
-            <h2>${PROD}</h2>
-          </th>
-        </tr>
-        <tr>
-          <th class="vertical-header dev-subheader">${Name}</th>
-          <th class="vertical-header dev-subheader">${Created by}</th>
-
-          <th class="vertical-header uat-subheader">${Exists?}</th>
-          <th class="vertical-header uat-subheader">${Committed?}</th>
-          <th class="vertical-header uat-subheader left-aligned">
-            ${Multiple sources}
-          </th>
-
-          <th class="vertical-header prod-subheader">${Exists?}</th>
-          <th class="vertical-header prod-subheader">${Committed?}</th>
-          <th class="vertical-header prod-subheader left-aligned">
-            ${Multiple sources}
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- Insert your data rows here -->
-        <tr
-          ng-repeat="mergedUpdateset in data.mergedUpdatesets | filter:c.filterBySelectedOption"
-        >
-          <!-- DEV -->
-          <td class="dev-subheader">{{mergedUpdateset.devUpdateset.name}}</td>
-          <td class="dev-subheader">
-            {{mergedUpdateset.devUpdateset.sys_created_by}}
-          </td>
-
-          <!-- UAT -->
-          <td class="uat-subheader left-aligned left-aligned">
-            <!-- Exist -->
-
-            <span ng-show="mergedUpdateset.uatUpdateset.exists == 'Yes'" >
-              <a ng-show="mergedUpdateset.uatUpdateset.exists == 'Yes'" target="_blank" ng-href="{{c.getUrl(data.uatUrl, mergedUpdateset.devUpdateset.name)}}">
-                <i class="colour-beige fa fa-check-circle" ></i>
-                <i class="colour-beige fa fa-life-ring"></i>
-              </a>
-            </span>
-
-            <!-- <i ng-show="mergedUpdateset.uatUpdateset.exists == 'Yes'" class="colour-beige fa fa-check-circle" ></i> -->
-            <i ng-show="mergedUpdateset.uatUpdateset.exists == 'No'"  class="colour-darkred fa fa-times-circle" ></i>
-
-            {{mergedUpdateset.uatUpdateset.exists}}
-          </td>
-          <td class="uat-subheader left-aligned">
-            <!-- Committed -->
-            <i
-              ng-show="mergedUpdateset.uatUpdateset.committed == 'Yes'"
-              class="colour-beige fa fa-check-circle"
-            ></i>
-            <i
-              ng-show="mergedUpdateset.uatUpdateset.committed == 'No'"
-              class="colour-darkred fa fa-times-circle"
-            ></i>
-            {{mergedUpdateset.uatUpdateset.committed }}
-          </td>
-
-          <td class="uat-subheader left-aligned">
-            <!-- Multiple updatesets -->
-            <i
-              ng-show="mergedUpdateset.uatUpdateset.hasRemoteAndLocal == 'Yes'"
-              class="colour-pink fa fa-exclamation-circle"
-            ></i>
-            <i
-              ng-show="mergedUpdateset.uatUpdateset.hasRemoteAndLocal == 'No'"
-              class="colour-darkred fa fa-times-circle"
-            ></i>
-
-            {{ mergedUpdateset.uatUpdateset.hasRemoteAndLocal}}
-          </td>
-
-          <!-- PROD -->
-          <td class="prod-subheader left-aligned">
-            <!-- Exist -->
-            <span ng-show="mergedUpdateset.prodUpdateset.exists == 'Yes'" >
-              <a ng-show="mergedUpdateset.prodUpdateset.exists == 'Yes'" target="_blank" ng-href="{{c.getUrl(data.uatUrl, mergedUpdateset.devUpdateset.name)}}">
-                <i class="colour-beige fa fa-check-circle" ></i>
-                <i class="colour-beige fa fa-life-ring"></i>
-              </a>
-            </span>
-
-            <i
-              ng-show="mergedUpdateset.prodUpdateset.exists == 'No'"
-              class="colour-darkred fa fa-times-circle"
-            ></i>
-
-            {{mergedUpdateset.prodUpdateset.exists}}
-          </td>
-          <td class="prod-subheader left-aligned">
-            <!-- Committed -->
-            <i
-              ng-show="mergedUpdateset.prodUpdateset.committed == 'Yes'"
-              class="colour-beige fa fa-check-circle"
-            ></i>
-            <i
-              ng-show="mergedUpdateset.prodUpdateset.committed == 'No'"
-              class="colour-darkred fa fa-times-circle"
-            ></i>
-
-            {{mergedUpdateset.prodUpdateset.committed}}
-          </td>
-
-          <td class="prod-subheader left-aligned">
-            <!-- Multiple updatesets -->
-            <i
-              ng-show="mergedUpdateset.prodUpdateset.hasRemoteAndLocal == 'Yes'"
-              class="colour-pink fa fa-exclamation-circle"
-            ></i>
-            <i
-              ng-show="mergedUpdateset.prodUpdateset.hasRemoteAndLocal == 'No'"
-              class="colour-darkred fa fa-times-circle"
-            ></i>
-
-            {{ mergedUpdateset.prodUpdateset.hasRemoteAndLocal}}
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+  <!--Details section: which includes the details of the updatesets for all the environments -->
+  <div ng-include="'details-section'"></div>
 </div>
 
 <!-- <pre>
