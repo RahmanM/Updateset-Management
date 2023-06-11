@@ -81,13 +81,21 @@
     //
     // Get navigation URL to remote update-set
     //
-    c.getUrl = function (url, name) {
+    c.getUrl = function (url, name, local) {
 
         if (!url.endsWith("/")) {
             url = url + "/";
         }
 
-        var link = url + "sys_remote_update_set.do?sysparm_query=name=" + name;
+        var updateSetUrl = '';
+
+        if(local){
+            updateSetUrl = "sys_update_set.do?sysparm_query=name=";
+        }else{
+            updateSetUrl = "sys_remote_update_set.do?sysparm_query=name=";
+        }
+
+        var link = url + updateSetUrl + name;
         return link;
     }
 
@@ -157,35 +165,48 @@
 
 };]]></client_script>
         <controller_as>c</controller_as>
-        <css>.dev-header,
+        <css>$border-colour : #b0adad;
+
+.dev-header,
 .dev-subheader,
 th.dev-header,
 td.dev-subheader {
-  background-color: #c3e6cb; /* Green */
+  background-color: #dce0d9; /* Green */
+  border: 1px solid $border-colour;
+
 }
 
 .uat-header,
 .uat-subheader,
 th.uat-header,
 td.uat-subheader {
-  background-color: coral; /* Orange: #ffc107 */
+  background-color: #fbf6ef; /* Orange: #ffc107 */
+  border: 1px solid $border-colour;
+
 }
 
 .prod-header,
 .prod-subheader,
 th.prod-header,
 td.prod-subheader {
-  background-color: darkturquoise; /* blueish */
+  background-color:  #ead7c3; /* blueish */
+  border: 1px solid $border-colour;
+
 }
 
 th.vertical-header {
   writing-mode: horizontal-tb;
   text-orientation: sideways;
   padding: 0.5rem;
+  border: 1px solid $border-colour;
+}
+
+table, th, td {
+  border: 1px solid $border-colour;
 }
 
 .colour-beige {
-  color: beige;
+  color: cadetblue;
 }
 
 .colour-darkred {
@@ -207,10 +228,6 @@ th.vertical-header {
 
 .margin-right-4 {
   margin-right: 4px;
-}
-
-.v-align-middle{
-  vertical-align: middle;
 }
 </css>
         <data_table>sp_instance</data_table>
@@ -400,14 +417,14 @@ th.vertical-header {
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2023-05-27 09:18:34</sys_created_on>
         <sys_id>5118e1714787e1101955b1a8536d43b4</sys_id>
-        <sys_mod_count>335</sys_mod_count>
+        <sys_mod_count>348</sys_mod_count>
         <sys_name>Compare updatesets</sys_name>
         <sys_package display_value="Updateset Management" source="x_293046_updateset">b0a3e5714747e1101955b1a8536d43eb</sys_package>
         <sys_policy/>
         <sys_scope display_value="Updateset Management">b0a3e5714747e1101955b1a8536d43eb</sys_scope>
         <sys_update_name>sp_widget_5118e1714787e1101955b1a8536d43b4</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2023-06-11 05:34:51</sys_updated_on>
+        <sys_updated_on>2023-06-11 09:09:19</sys_updated_on>
         <template><![CDATA[<!--Validation and error section -->
 <div ng-include="'validation-error-section'"></div>
 
