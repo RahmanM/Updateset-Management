@@ -6,14 +6,14 @@
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2023-06-10 01:56:12</sys_created_on>
         <sys_id>10298452471721101955b1a8536d4340</sys_id>
-        <sys_mod_count>6</sys_mod_count>
+        <sys_mod_count>8</sys_mod_count>
         <sys_name>validation-error-section</sys_name>
         <sys_package display_value="Updateset Management" source="x_293046_updateset">b0a3e5714747e1101955b1a8536d43eb</sys_package>
         <sys_policy/>
         <sys_scope display_value="Updateset Management">b0a3e5714747e1101955b1a8536d43eb</sys_scope>
         <sys_update_name>sp_ng_template_10298452471721101955b1a8536d4340</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2023-06-11 00:36:16</sys_updated_on>
+        <sys_updated_on>2023-06-11 00:58:52</sys_updated_on>
         <template><![CDATA[<div class="alert alert-warning" role="alert" ng-show="!data.isConfigured">
   <p>
     ${
@@ -32,7 +32,8 @@
   
   <ul>
     <li>${Create an integration user. OOTB it is using a user with username of 'updateset.integration.user'. However, you can use any existing user if needed.}</li>
-    <li>${The user need to have 'Admin' and 'rest_service' roles and 'Web service access only' ticked}</li>
+    <li>${The user need to have 'Admin' and 'rest_service' roles and 'Web service access only' needs to be ticked}</li>
+    <li>${Import the above user in all the other instances (URL, PROD) as required. Note the same user and password will be used to connect to other instances.}</li>
     <li>${Update the Basic Auth Configuration record 'Updateset Management' to use the above user/password}</li>
     <li>${Configure the DEV/UAT/Live URLs. These can be done either using the System Properties values under the Application Menu or through the Widget Instance options}</li>
     <li>${Configure the other system properties i.e. Encoded Query, Total records to return etc}</li>
