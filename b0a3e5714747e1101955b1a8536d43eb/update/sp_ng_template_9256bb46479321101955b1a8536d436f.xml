@@ -6,14 +6,14 @@
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2023-06-10 00:33:55</sys_created_on>
         <sys_id>9256bb46479321101955b1a8536d436f</sys_id>
-        <sys_mod_count>9</sys_mod_count>
+        <sys_mod_count>25</sys_mod_count>
         <sys_name>filter-section</sys_name>
         <sys_package display_value="Updateset Management" source="x_293046_updateset">b0a3e5714747e1101955b1a8536d43eb</sys_package>
         <sys_policy/>
         <sys_scope display_value="Updateset Management">b0a3e5714747e1101955b1a8536d43eb</sys_scope>
         <sys_update_name>sp_ng_template_9256bb46479321101955b1a8536d436f</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2023-06-10 04:28:20</sys_updated_on>
+        <sys_updated_on>2023-06-10 12:02:13</sys_updated_on>
         <template><![CDATA[  <div
     ng-init="c.selectedOption= 'all'"
     class="panel panel-default"
@@ -34,7 +34,7 @@
         value="all"
         ng-change="c.onFilterChange(data.mergedUpdatesets, c.filterBySelectedOption)"
       />
-      <label class="form-check-label" for="all">All</label>
+      <label class="form-check-label v-align-middle" for="all" data-toggle="tooltip" data-placement="bottom" title="${Filter to show all the updatesets based on configurations}">All</label>
     </div>
     <div class="checkbox-inline">
       <input
@@ -46,7 +46,7 @@
         value="uatCommitted"
         ng-change="c.onFilterChange(data.mergedUpdatesets, c.filterBySelectedOption)"
       />
-      <label class="form-check-label" for="uat1">UAT Committed</label>
+      <label class="form-check-label v-align-middle" for="uatCommitted" data-toggle="tooltip" data-placement="bottom" title="${Filter to show only update-sets that are committed in UAT}">UAT Committed</label>
     </div>
     <div class="checkbox-inline">
       <input
@@ -58,8 +58,7 @@
         value="uatUncommitted"
         ng-change="c.onFilterChange(data.mergedUpdatesets, c.filterBySelectedOption)"
       />
-      <label class="form-check-label" for="inlineRadio2"
-        >UAT Un-committed</label
+      <label class="form-check-label v-align-middle" for="uatUncommitted" data-toggle="tooltip" data-placement="bottom" title="${Filter to show only update-sets that are not committed in UAT}">UAT Un-committed</label
       >
     </div>
     <div class="checkbox-inline">
@@ -72,7 +71,7 @@
         value="prodCommitted"
         ng-change="c.onFilterChange(data.mergedUpdatesets, c.filterBySelectedOption)"
       />
-      <label class="form-check-label" for="prod1">Prod Committed</label>
+      <label class="form-check-label v-align-middle" for="prodCommitted" data-toggle="tooltip" data-placement="bottom" title="${Filter to show only update-sets that are committed in Prod}">Prod Committed</label>
     </div>
     
     <div class="checkbox-inline">
@@ -85,26 +84,25 @@
         value="prodUncommitted"
         ng-change="c.onFilterChange(data.mergedUpdatesets, c.filterBySelectedOption)"
       />
-      <label class="form-check-label" for="prod1">Prod Un-committed</label>
+      <label class="form-check-label v-align-middle" for="prodUncommitted" data-toggle="tooltip" data-placement="bottom" title="${Filter to show only update-sets that are not committed in Prod}">
+        Prod Un-committed</label>
     </div>
 
     <!-- <input ng-model="c.selectedOption" value="filterByName" style="width: 200px" class="form-control form-control-sm checkbox-inline" type="text" placeholder="Filter by name"> -->
 
     <button
-      class="btn btn-success right-aligned-btn hover-text"
+      class="btn btn-success right-aligned-btn hover-text" data-toggle="tooltip" data-placement="bottom" title="${Export the data to Excel}"
       ng-click="c.exportTableToExcel('updates','update-sets')"
     >
       <i class="fa fa-table" aria-hidden="true"></i>
-      <span class="tooltip-text left">Export to Excel</span>
     </button>
 
     <button
-      ng-show="data.bulkDownloadRenameExists"
+      ng-show="data.bulkDownloadRenameExists" data-toggle="tooltip" data-placement="bottom" title="${Download the update-set as XML file}"
       class="btn btn-success right-aligned-btn hover-text margin-right-4"
       ng-click="c.exportUpdatesets()"
     >
       <i class="fa fa-solid fa-download"></i>
-      <span class="tooltip-text left">Export to XML</span>
     </button>
   </div>]]></template>
     </sp_ng_template>
