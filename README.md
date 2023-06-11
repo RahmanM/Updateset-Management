@@ -11,5 +11,5 @@ A portal widget that enables to compare the completed update-sets among the diff
 - Download the updatesets as XML in bulk
 - Order the update-sets based on different columns
 
-![Compare updatesets widget](https://github.com/RahmanM/Updateset-Management/blob/main/updatesets.png)
+![Compare updatesets widget](https://github.com/RahmanM/Updateset-Management/blob/main/updatesetv2.png)
 
