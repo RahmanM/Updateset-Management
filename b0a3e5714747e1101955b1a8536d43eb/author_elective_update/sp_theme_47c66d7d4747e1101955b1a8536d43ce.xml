@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_theme">
+    <sp_theme action="DELETE">
+        <css_variables/>
+        <footer/>
+        <footer_fixed>false</footer_fixed>
+        <header/>
+        <name>UM Theme</name>
+        <navbar_fixed>false</navbar_fixed>
+        <sys_class_name>sp_theme</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2023-05-27 09:12:41</sys_created_on>
+        <sys_id>47c66d7d4747e1101955b1a8536d43ce</sys_id>
+        <sys_mod_count>7</sys_mod_count>
+        <sys_name>UM Theme</sys_name>
+        <sys_package display_value="Updateset Management" source="x_293046_updateset">b0a3e5714747e1101955b1a8536d43eb</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Updateset Management">b0a3e5714747e1101955b1a8536d43eb</sys_scope>
+        <sys_update_name>sp_theme_47c66d7d4747e1101955b1a8536d43ce</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2023-06-13 12:09:36</sys_updated_on>
+        <turn_off_scss_compilation>false</turn_off_scss_compilation>
+    </sp_theme>
+    <sys_update_version action="INSERT_OR_UPDATE">
+        <action>DELETE</action>
+        <application display_value="Updateset Management">b0a3e5714747e1101955b1a8536d43eb</application>
+        <file_path/>
+        <instance_id>d750b348db60dfc00e785d00cf961966</instance_id>
+        <instance_name>dev50458</instance_name>
+        <name>sp_theme_47c66d7d4747e1101955b1a8536d43ce</name>
+        <payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_theme"><sp_theme action="INSERT_OR_UPDATE"><css_variables/><footer/><footer_fixed>false</footer_fixed><header/><name>UM Theme</name><navbar_fixed>false</navbar_fixed><sys_class_name>sp_theme</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2023-05-27 09:12:41</sys_created_on><sys_id>47c66d7d4747e1101955b1a8536d43ce</sys_id><sys_mod_count>7</sys_mod_count><sys_name>UM Theme</sys_name><sys_package display_value="Updateset Management" source="x_293046_updateset">b0a3e5714747e1101955b1a8536d43eb</sys_package><sys_policy/><sys_scope display_value="Updateset Management">b0a3e5714747e1101955b1a8536d43eb</sys_scope><sys_update_name>sp_theme_47c66d7d4747e1101955b1a8536d43ce</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2023-06-13 12:09:36</sys_updated_on><turn_off_scss_compilation>false</turn_off_scss_compilation></sp_theme></record_update>]]></payload>
+        <payload_hash>-660780515</payload_hash>
+        <record_name>UM Theme</record_name>
+        <reverted_from/>
+        <source>49f7d25b4783e5101955b1a8536d4318</source>
+        <source_table>sys_update_set</source_table>
+        <state>previous</state>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2023-06-13 12:21:48</sys_created_on>
+        <sys_id>2d35b9df475f61101955b1a8536d436d</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_recorded_at>188b4b481590000001</sys_recorded_at>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2023-06-13 12:21:48</sys_updated_on>
+        <type>Theme</type>
+        <update_guid>b262391bf95f6110f42354975b510b2b</update_guid>
+        <update_guid_history>b262391bf95f6110f42354975b510b2b:-238997901,b262391bf95f6110f42354975b510b2b:-238997901,9bb031d3265f6110f3a3b44550510087:-1742852484,382cedd7bc1f6110bcf4a7db79d45ee8:-238997901,509bed578f1f611052c11b07ef148cc2:2118611467,8329295fb1db6110c734e4ea8901d177:707893218,9519e95b22db6110483432b910764a76:-1742852484,846729bd1647e110aaaa51e0ee5ab23b:2102695454,ede6657de747e11055fcaeccba8c1591:228806029</update_guid_history>
+    </sys_update_version>
+    <sys_metadata_delete action="INSERT_OR_UPDATE">
+        <sys_audit_delete display_value="UM Theme">a845b59f475f61101955b1a8536d43a3</sys_audit_delete>
+        <sys_class_name>sys_metadata_delete</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2023-06-13 12:22:00</sys_created_on>
+        <sys_db_object display_value="" name="sp_theme">sp_theme</sys_db_object>
+        <sys_id>1f70d1cec0c14dc6999fd464f868d631</sys_id>
+        <sys_metadata>47c66d7d4747e1101955b1a8536d43ce</sys_metadata>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>UM Theme</sys_name>
+        <sys_package display_value="Updateset Management" source="x_293046_updateset">b0a3e5714747e1101955b1a8536d43eb</sys_package>
+        <sys_parent/>
+        <sys_policy/>
+        <sys_scope display_value="Updateset Management">b0a3e5714747e1101955b1a8536d43eb</sys_scope>
+        <sys_scope_delete display_value="">8ae4658b49694d1f8c49ffadb25f7aa9</sys_scope_delete>
+        <sys_update_name>sp_theme_47c66d7d4747e1101955b1a8536d43ce</sys_update_name>
+        <sys_update_version display_value="sp_theme_47c66d7d4747e1101955b1a8536d43ce">2d35b9df475f61101955b1a8536d436d</sys_update_version>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2023-06-13 12:22:00</sys_updated_on>
+    </sys_metadata_delete>
+</record_update>

@@ -13,7 +13,7 @@
         <license_definition/>
         <license_model>none</license_model>
         <logo/>
-        <menu/>
+        <menu display_value="Updateset managment">f7b19cb04753e5101955b1a8536d43ab</menu>
         <name>Updateset Management</name>
         <private>false</private>
         <restrict_table_access>false</restrict_table_access>
@@ -29,15 +29,19 @@
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2023-05-27 08:58:25</sys_created_on>
         <sys_id>b0a3e5714747e1101955b1a8536d43eb</sys_id>
-        <sys_mod_count>2</sys_mod_count>
+        <sys_mod_count>4</sys_mod_count>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2023-05-29 23:31:01</sys_updated_on>
+        <sys_updated_on>2023-06-11 10:16:33</sys_updated_on>
         <template/>
         <trackable>true</trackable>
         <uninstall_blocked>false</uninstall_blocked>
-        <user_role/>
+        <user_role display_value="admin" name="admin">2831a114c611228501d4ea6c309d626d</user_role>
         <vendor/>
         <vendor_prefix/>
         <version>1.0.0</version>
+        <x_snc_devtools_documentation_url/>
+        <x_snc_devtools_maintainer/>
+        <x_snc_devtools_maintainer_email/>
+        <x_snc_devtools_repo_url/>
     </sys_app>
 </record_update>

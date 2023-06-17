@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_ng_template">
+    <sp_ng_template action="INSERT_OR_UPDATE">
+        <id>details-section-ou</id>
+        <sp_widget display_value="Open Updatesets">63b75428476b65101955b1a8536d432e</sp_widget>
+        <sys_class_name>sp_ng_template</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2023-06-17 03:45:34</sys_created_on>
+        <sys_id>f265a8e447eb65101955b1a8536d435a</sys_id>
+        <sys_mod_count>11</sys_mod_count>
+        <sys_name>details-section-ou</sys_name>
+        <sys_package display_value="Updateset Management" source="x_293046_updateset">b0a3e5714747e1101955b1a8536d43eb</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Updateset Management">b0a3e5714747e1101955b1a8536d43eb</sys_scope>
+        <sys_update_name>sp_ng_template_f265a8e447eb65101955b1a8536d435a</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2023-06-17 09:02:34</sys_updated_on>
+        <template><![CDATA[  <div>
+  
+    <table id="update-set-table" class="table">
+      <thead class="thead-dark">
+  
+	  
+        <tr>
+          <th class="dev-header" colspan="6">
+            <h2 data-toggle="tooltip" data-placement="bottom" 
+            title="${This is the Development environment update-sets based on the filter defined on Encoded Query configuration or defaulted to in-progress update-sets}">${DEV}</h2>
+          </th>
+        </tr>
+        <tr>
+          <th class="vertical-header dev-subheader"></i>No</th>
+
+          <th class="vertical-header dev-subheader" ng-click="c.sortData('name')"></i>${Name} 
+            <span ng-class="c.getSortClass('name')"></span>
+          </th>
+
+          <th class="vertical-header dev-subheader" ng-click="c.sortData('sys_created_by')">${Created by} 
+            <span ng-class="c.getSortClass('sys_created_by')"></span>
+          </th>          
+          
+          <th class="vertical-header dev-subheader" ng-click="c.sortData('sys_created_on')">${Created on} 
+            <span ng-class="c.getSortClass('sys_created_on')"></span>
+          </th>
+
+          <th class="vertical-header dev-subheader" ng-click="c.sortData('application')">${Application} 
+            <span ng-class="c.getSortClass('application')"></span>
+          </th>
+
+          <th class="vertical-header dev-subheader" ng-click="c.sortData('parent')">${Parent} 
+            <span ng-class="c.getSortClass('parent')"></span>
+          </th>
+
+        </tr>
+		
+		
+      </thead>
+      
+      <tbody>
+	 
+        <tr
+          ng-repeat="devUpdateset in data.devUpdatesets | filter:c.onFilter |  orderBy:c.sortColumn:c.reversedSort"
+        >
+		
+          <!-- DEV -->
+          <td class="dev-subheader">{{$index+1}}</td>
+          <td class="dev-subheader">
+            <a target="_blank" ng-href="{{c.getUrl(data.devUrl, devUpdateset.name, true)}}" >
+              {{::devUpdateset.name}}
+            </a>
+
+          </td>
+
+          <td class="dev-subheader">
+            {{::devUpdateset.sys_created_by}}
+          </td>
+
+          <td class="dev-subheader">
+            {{::devUpdateset.sys_created_on}}
+          </td>
+
+          <td class="dev-subheader">
+            {{::devUpdateset.application}}
+          </td>
+
+          <td class="dev-subheader">
+            {{::devUpdateset.parent}}
+          </td>
+
+
+        </tr>
+		
+      </tbody>
+    </table>
+  </div>]]></template>
+    </sp_ng_template>
+</record_update>

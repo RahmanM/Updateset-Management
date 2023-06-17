@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_ng_template">
+    <sp_ng_template action="INSERT_OR_UPDATE">
+        <id>validation-error-section-ou</id>
+        <sp_widget display_value="Open Updatesets">63b75428476b65101955b1a8536d432e</sp_widget>
+        <sys_class_name>sp_ng_template</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2023-06-17 03:44:15</sys_created_on>
+        <sys_id>7af424e447eb65101955b1a8536d43c8</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>validation-error-section-ou</sys_name>
+        <sys_package display_value="Updateset Management" source="x_293046_updateset">b0a3e5714747e1101955b1a8536d43eb</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Updateset Management">b0a3e5714747e1101955b1a8536d43eb</sys_scope>
+        <sys_update_name>sp_ng_template_7af424e447eb65101955b1a8536d43c8</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2023-06-17 03:44:15</sys_updated_on>
+        <template><![CDATA[<div class="alert alert-warning" role="alert" ng-show="!data.isConfigured">
+  <p>
+    ${
+      If this is the first time you are viewing this page then please configure
+      the DEV, UAT (Test), and Production environment Urls and other required
+      configurations. These settings can be configured either using this Widget
+      instance Options or in the back-end using the required System Properties.
+      Please navigate to "Updateset Management" application menu and configure the
+      options. 
+    }
+  </p>
+
+  <br/>
+
+  <p>${In a high level the followings needs to be configured:}</p>
+  
+  <ul>
+    <li>${Create an integration user. OOTB it is using a user with username of 'updateset.integration.user'. However, you can use any existing user if needed.}</li>
+    <li>${The user need to have 'Admin' and 'rest_service' roles and 'Web service access only' needs to be ticked}</li>
+    <li>${Import the above user in all the other instances (URL, PROD) as required. Note the same user and password will be used to connect to other instances.}</li>
+    <li>${Update the Basic Auth Configuration record 'Updateset Management' to use the above user/password}</li>
+    <li>${Configure the DEV/UAT/Live URLs. These can be done either using the System Properties values under the Application Menu or through the Widget Instance options}</li>
+    <li>${Configure the other system properties i.e. Encoded Query, Total records to return etc}</li>
+    <li>${Navigate to /um portal page and refresh the page.}</li>
+    <li>${Note: The 'Download updateset as xml file' will only show if you have installed the 'Bulk Download-Rename of Update Sets' from ServiceNow share. Read more about it <a href="https://developer.servicenow.com/blog.do?p=/post/share-spotlight-bulk-download-naming-of-update-sets">here</a>}</li>
+  </ul>
+
+</div>
+
+<div class="alert alert-warning" role="alert" ng-show="data.showError">
+  {{data.errors}}
+</div>]]></template>
+    </sp_ng_template>
+</record_update>

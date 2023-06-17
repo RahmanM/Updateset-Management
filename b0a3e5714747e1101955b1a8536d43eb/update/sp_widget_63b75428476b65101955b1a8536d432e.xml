@@ -5,53 +5,10 @@
     /* widget controller */
     var c = this;
 
-    c.selectedOption = '';
+    c.onFilter = '';
     c.currentFilteredData = [];
-    c.sortColumn = 'devUpdateset.name'; // initial sort
+    c.sortColumn = 'name'; // initial sort
     c.reversedSort = false;
-
-    //
-    // Function that handles the filtering options
-    //
-    c.filterBySelectedOption = function (item) {
-
-        if (!item) return false;
-
-        // console.log(item);
-        //console.log(c.selectedOption, "selectedOption");
-
-        var STATE_COMMITTED = "Yes";
-
-        var result = false
-
-        switch (c.selectedOption) {
-            case 'all':
-                result = true;
-                break;
-            case 'uatCommitted':
-                if (item.uatUpdateset && item.uatUpdateset.committed == STATE_COMMITTED) {
-                    result = true;
-                }
-                break;
-            case 'uatUncommitted':
-                if (item.uatUpdateset && item.uatUpdateset.committed != STATE_COMMITTED) {
-                    result = true;
-                }
-                break;
-            case 'prodCommitted':
-                if (item.prodUpdateset && item.prodUpdateset.committed == STATE_COMMITTED) {
-                    result = true;
-                }
-                break;
-            case 'prodUncommitted':
-                if (item.prodUpdateset && item.prodUpdateset.committed != STATE_COMMITTED) {
-                    result = true;
-                    break;
-                }
-        }
-
-        return result;
-    }
 
     //
     // Set the sort column and reversed sort
@@ -74,6 +31,7 @@
     // Get the filtered data
     //
     c.onFilterChange = function (data, query) {
+        //console.log(data, query)
         var filteredData = $filter('filter')(data, query);
         c.currentFilteredData = filteredData;
     }
@@ -91,8 +49,6 @@
 
         if(local){
             updateSetUrl = "sys_update_set.do?sysparm_query=name=";
-        }else{
-            updateSetUrl = "sys_remote_update_set.do?sysparm_query=name=";
         }
 
         var link = url + updateSetUrl + name;
@@ -150,7 +106,7 @@
             var confirmed = confirm("This will download all the filtered " + downloads + " updatesets as XML file to your local machine. Are you sure you want to proceed?");
 
             if(confirmed){
-                var ids = c.currentFilteredData.map(f=> f.devUpdateset.sys_id).toString();
+                var ids = c.currentFilteredData.map(f=> f.sys_id).toString();
                 var sets = ids.split(',');
     
                 for (var i = 0, L = sets.length; i < L; i++) {
@@ -236,12 +192,12 @@ table, th, td {
         <docs/>
         <field_list/>
         <has_preview>true</has_preview>
-        <id>compare_updatesets</id>
+        <id>open_updatesets</id>
         <internal>false</internal>
         <link><![CDATA[function link(scope, element, attrs, controller) { 
 
  }]]></link>
-        <name>Compare updatesets</name>
+        <name>Open Updatesets</name>
         <option_schema>[
     {
         "hint": "URL of the DEV environment",
@@ -293,8 +249,6 @@ table, th, td {
 	// ----------------------------------------------------------------------------------------------------------------------------------------
 
 	data.devUrl = options.dev_url || gs.getProperty('x_293046_updateset.DEV_Base_URL');;
-	data.uatUrl = options.uat_url || gs.getProperty('x_293046_updateset.UAT_Base_URL');
-	data.prodUrl = options.prod_url || gs.getProperty('x_293046_updateset.Prod_Base_URL');
 	let encodedQuery = options.encoded_query;
 	let maxRecords = options.max_records_limit || gs.getProperty('x_293046_updateset.dev_records_limit', 100);
 
@@ -303,7 +257,7 @@ table, th, td {
 	// Validate at least DEV and UAT URLs configured
 	// ----------------------------------------------------------------------------------------------------------------------------------------
 
-	let helper = new x_293046_updateset.ClosedUpdatesetHelper(data.devUrl, data.uatUrl, data.prodUrl, maxRecords, encodedQuery);
+	let helper = new x_293046_updateset.OpenUpdatesetHelper(data.devUrl, maxRecords, encodedQuery);
 	data.isConfigured = helper.isConfigured();
 
 	// ----------------------------------------------------------------------------------------------------------------------------------------
@@ -315,66 +269,10 @@ table, th, td {
 	 * @returns Updateset data as list
 	 */
 	function getUpdatesetsData() {
-		let allUpdatesets = helper.getMergedUpdatesets();
+		let allUpdatesets = helper.getAllLocalUpdatesets();
 		return allUpdatesets;
 	}
 
-	/**
-	 * Prepare the view model data
-	 * @param {array of object} mergedUpdatesets 
-	 * @returns an array formatted for UI usage
-	 */
-	function prepareModel(mergedUpdatesets) {
-		// Format the response for the UI
-		let formattedResults = [];
-
-		mergedUpdatesets.forEach(updateSetResult => {
-
-			var formattedResult = {
-				devUpdateset: {},
-				uatUpdateset: {
-					exists: false,
-					committed: false,
-					localState: '',
-					remoteState: '',
-					source: ''
-				},
-				prodUpdateset: {
-					exists: false,
-					committed: false,
-					localState: '',
-					remoteState: '',
-					source: ''
-				}
-			}
-
-			// DEV updateset
-			formattedResult.devUpdateset = updateSetResult.devUpdateset;
-
-			// UAT updateset
-			formattedResult.uatUpdateset = {
-				exists: (updateSetResult.uatUpdatesetLocal || updateSetResult.uatUpdatesetRemote) ? 'Yes' : 'No',
-				committed: ((updateSetResult.uatUpdatesetLocal && updateSetResult.uatUpdatesetLocal.state == 'Committed') ||
-					(updateSetResult.uatUpdatesetRemote && updateSetResult.uatUpdatesetRemote.state == 'Committed')) ? 'Yes' : 'No',
-				source: updateSetResult.uatUpdatesetRemote ? updateSetResult.uatUpdatesetRemote.update_source : '',
-				hasRemoteAndLocal: (updateSetResult.uatUpdatesetRemote && updateSetResult.uatUpdatesetLocal) ? 'Yes' : 'No'
-			}
-
-			// Prod updateset
-			formattedResult.prodUpdateset = {
-				exists: (updateSetResult.prodUpdatesetLocal || updateSetResult.prodUpdatesetRemote) ? 'Yes' : 'No',
-				committed: ((updateSetResult.prodUpdatesetLocal && updateSetResult.prodUpdatesetLocal.state == 'Committed') ||
-					(updateSetResult.prodUpdatesetRemote && updateSetResult.prodUpdatesetRemote.state == 'Committed')) ? 'Yes' : 'No',
-				source: updateSetResult.prodUpdatesetRemote ? updateSetResult.prodUpdatesetRemote.update_source : '',
-				hasRemoteAndLocal: (updateSetResult.prodUpdatesetRemote && updateSetResult.prodUpdatesetLocal) ? 'Yes' : 'No'
-			}
-
-			formattedResults.push(formattedResult);
-
-		});
-
-		return formattedResults;
-	}
 
 	//
 	// This update-set from the ServiceNow share is required to do the bulk export of the updatesets.
@@ -393,10 +291,10 @@ table, th, td {
 	// Get the merged updatesets
 	try {
 		if (data.isConfigured) {
-			let mergedUpdatesets = getUpdatesetsData();
+			let updatesets = getUpdatesetsData();
 
-			let formattedResults = prepareModel(mergedUpdatesets)
-			data.mergedUpdatesets = formattedResults;
+			//let formattedResults = prepareModel(updatesets)
+			data.devUpdatesets = updatesets;
 
 			data.bulkDownloadRenameExists = bulkDownloadExists();
 		}
@@ -415,25 +313,25 @@ table, th, td {
         <servicenow>false</servicenow>
         <sys_class_name>sp_widget</sys_class_name>
         <sys_created_by>admin</sys_created_by>
-        <sys_created_on>2023-05-27 09:18:34</sys_created_on>
-        <sys_id>5118e1714787e1101955b1a8536d43b4</sys_id>
-        <sys_mod_count>350</sys_mod_count>
-        <sys_name>Compare updatesets</sys_name>
+        <sys_created_on>2023-06-17 02:45:49</sys_created_on>
+        <sys_id>63b75428476b65101955b1a8536d432e</sys_id>
+        <sys_mod_count>20</sys_mod_count>
+        <sys_name>Open Updatesets</sys_name>
         <sys_package display_value="Updateset Management" source="x_293046_updateset">b0a3e5714747e1101955b1a8536d43eb</sys_package>
         <sys_policy/>
         <sys_scope display_value="Updateset Management">b0a3e5714747e1101955b1a8536d43eb</sys_scope>
-        <sys_update_name>sp_widget_5118e1714787e1101955b1a8536d43b4</sys_update_name>
+        <sys_update_name>sp_widget_63b75428476b65101955b1a8536d432e</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2023-06-15 11:53:28</sys_updated_on>
+        <sys_updated_on>2023-06-17 10:20:08</sys_updated_on>
         <template><![CDATA[<!--Validation and error section -->
-<div ng-include="'validation-error-section'"></div>
+<div ng-include="'validation-error-section-ou'"></div>
 
 <div ng-show="data.isConfigured && !data.showError">
   <!-- Filter section: which includes the filter option buttons and actions like download etc -->
-  <div ng-include="'filter-section'"></div>
+  <div ng-include="'filter-section-ou'"></div>
 
   <!--Details section: which includes the details of the updatesets for all the environments -->
-  <div id="update-sets" ng-include="'details-section'"></div>
+  <div id="update-sets" ng-include="'details-section-ou'"></div>
 
   
 </div>

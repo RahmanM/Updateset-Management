@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>x_293046_updateset.Logger</api_name>
+        <caller_access/>
+        <client_callable>false</client_callable>
+        <description/>
+        <name>Logger</name>
+        <script><![CDATA[var Logger = Class.create();
+
+/**
+ * Logs messages to system log only for sub-prods
+ * 
+ * usage:
+ * 
+ * var logger = new Logger(true, "MyLogs"); // With default sub prod keywords and log prefix
+ */
+Logger.prototype = {
+
+    /// properties
+    _logPrefix: null,
+    shouldLog: false,
+    knownConfigError: "There was error while retrieving the data. The error has been logged. Please check the log and if it is related to some missing configurations, please fix the configurations and try again.",
+
+    /**
+     * Constructor
+     * Should log: true/false
+     * @param {string} logPrefix prefix to be added to the log otherwise will be defaulted to
+     */
+    initialize: function(shouldLog, logPrefix) {
+        this.shouldLog = shouldLog || false;
+        this._logPrefix = logPrefix;
+
+        if (!this._logPrefix) {
+            this._logPrefix = "VF:";
+        }
+    },
+
+    /**
+     * Logs warning message
+     * @param {string} msg message to be logged
+     */
+    warn: function(msg) {
+        if (this.shouldLog) {
+            gs.warn(this._logPrefix + msg);
+            return true;
+        }
+
+        return false;
+    },
+
+    /**
+     * Logs error message
+     * @param {string} msg message to be logged
+     */
+    error: function(msg) {
+        if (this.shouldLog) {
+            gs.error(this._logPrefix + msg);
+            return true;
+        }
+
+        return false;
+    },
+
+    /**
+     * Logs info message
+     * @param {string} msg message to be logged
+     */
+    info: function(msg) {
+        if (this.shouldLog) {
+            gs.info(this._logPrefix + msg);
+            return true;
+        }
+
+        return false;
+    },
+
+    logErrorAlwayse: function(msg) {
+        if (msg) {
+            gs.info(this._logPrefix + msg);
+        }
+    },
+
+    //
+    // Log the known errors and then throw
+    //
+    throwKnownError: function(errorDetails) {
+
+        if (errorDetails) {
+            this.error(this.knownConfigError + "\n\n" + errorDetails);
+        }
+
+        throw new Error(gs.getMessages(this.knownConfigError));
+    },
+
+
+    type: 'Logger'
+};]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2023-06-15 10:50:37</sys_created_on>
+        <sys_id>2323b37f479321101955b1a8536d4352</sys_id>
+        <sys_mod_count>5</sys_mod_count>
+        <sys_name>Logger</sys_name>
+        <sys_package display_value="Updateset Management" source="x_293046_updateset">b0a3e5714747e1101955b1a8536d43eb</sys_package>
+        <sys_policy>read</sys_policy>
+        <sys_scope display_value="Updateset Management">b0a3e5714747e1101955b1a8536d43eb</sys_scope>
+        <sys_update_name>sys_script_include_2323b37f479321101955b1a8536d4352</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2023-06-15 11:24:43</sys_updated_on>
+    </sys_script_include>
+</record_update>

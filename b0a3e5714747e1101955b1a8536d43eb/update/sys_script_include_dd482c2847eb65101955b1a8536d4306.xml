@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>public</access>
+        <active>true</active>
+        <api_name>x_293046_updateset.OpenUpdatesetHelper</api_name>
+        <caller_access/>
+        <client_callable>false</client_callable>
+        <description/>
+        <name>OpenUpdatesetHelper</name>
+        <script><![CDATA[var OpenUpdatesetHelper = Class.create();
+OpenUpdatesetHelper.prototype = {
+
+  devUrl: '',
+  devRecordsLimit: 0,
+  devEncodedQuery: '',
+  logger: null,
+  restHelper : null,
+  devFields : "name,state,sys_id,sys_created_by,sys_created_on,application,parent",
+
+
+  /**
+   * 
+   * @param {string} devUrl : DEV instance URL
+   * @param {string} maxRecordsLimit : Max number of records to search
+   * @param {string} encodedQuery : encoded query to be applied to limit the records
+   */
+  initialize: function (devUrl,maxRecordsLimit, encodedQuery) {
+
+    this.devUrl = devUrl;
+    this.devRecordsLimit = maxRecordsLimit;
+    this.logger = new x_293046_updateset.Logger(gs.getProperty('x_293046_updateset.debug_mode', false), "VF:");
+    this.restHelper = new x_293046_updateset.RestHelper(maxRecordsLimit, encodedQuery);
+
+
+    if (encodedQuery) {
+      encodedQuery = encodeURIComponent(encodedQuery); // Apply URI encoding as REST needs i
+    }
+
+    this.devEncodedQuery = encodedQuery ? encodedQuery : "state=complete";
+
+    this.logIfDebug("this.devUrl:" + this.devUrl);
+    this.logIfDebug("this.devEncodedQuery:" + this.devEncodedQuery);
+  },
+
+  /**
+   * Public function indicating of the widget/system properties etc are configured
+   */
+  isConfigured: function () {
+    if (!this.devUrl) {
+      return false;
+    }
+
+    return true;
+  },
+
+  // /**
+  //  * This is the main function to be called. It will return all update-sets with Dev update-sets as left joined
+  //  * @returns a list of all the DEV, UAT and Prod update-sets
+  //  */
+  // getMergedUpdatesets: function () {
+
+  //   var allUpdatesets = this.processUpdateSetsForAllEnvironments();
+
+  //   var joinedUpdatesets = this.leftJoinUpdatesets(allUpdatesets.dev, allUpdatesets.uat, allUpdatesets.prod);
+
+  //   return joinedUpdatesets;
+
+  // },
+
+  
+  /**
+   * Returns all the update-sets for DEV, UAT and Prod unprocessed.
+   * UAT and PROD update-sets are filtered based on the names of the DEV
+   * @returns 
+   */
+  getAllLocalUpdatesets : function () {
+    
+    let devUpdatesets = [];
+
+    let localUpdatesets = this.restHelper.getDevUpdatesets(this.devUrl, this.devFields);
+
+    // Get the remote update-sets for the names we identified for DEV
+    if (localUpdatesets && this.isValidJSON(localUpdatesets)) {
+      let resultObj = JSON.parse(localUpdatesets);
+      devUpdatesets = resultObj.result;
+
+    }
+
+    return devUpdatesets;
+  },
+
+
+
+  //
+  // Log the errors with prefix
+  // 
+  logError: function (error) {
+    this.logger.error(error);
+  },
+
+  /**
+   * Validate if JSON string is valid else throw error
+   * @param {json string} jsonString 
+   * @returns 
+   */
+  isValidJSON: function (jsonString) {
+    try {
+      JSON.parse(jsonString);
+      return true;
+    } catch (error) {
+      this.logger.throwKnownError("Unable to parse the JSON response: " + error.message || error);
+    }
+  },
+
+  //
+  // Log if debug is enabled
+  //
+  logIfDebug: function (message) {
+    this.logger.info(message);
+  },
+
+  type: 'OpenUpdatesetHelper'
+
+};
+
+
+]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2023-06-17 03:58:02</sys_created_on>
+        <sys_id>dd482c2847eb65101955b1a8536d4306</sys_id>
+        <sys_mod_count>2</sys_mod_count>
+        <sys_name>OpenUpdatesetHelper</sys_name>
+        <sys_package display_value="Updateset Management" source="x_293046_updateset">b0a3e5714747e1101955b1a8536d43eb</sys_package>
+        <sys_policy>read</sys_policy>
+        <sys_scope display_value="Updateset Management">b0a3e5714747e1101955b1a8536d43eb</sys_scope>
+        <sys_update_name>sys_script_include_dd482c2847eb65101955b1a8536d4306</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2023-06-17 05:40:45</sys_updated_on>
+    </sys_script_include>
+</record_update>
