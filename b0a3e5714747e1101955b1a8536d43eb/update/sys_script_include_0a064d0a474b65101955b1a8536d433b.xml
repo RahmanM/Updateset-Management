@@ -2,21 +2,22 @@
     <sys_script_include action="INSERT_OR_UPDATE">
         <access>public</access>
         <active>true</active>
-        <api_name>x_293046_updateset.UpdatesetHelper</api_name>
+        <api_name>x_293046_updateset.ClosedUpdatesetHelper</api_name>
         <caller_access/>
         <client_callable>false</client_callable>
         <description/>
-        <name>UpdatesetHelper</name>
-        <script><![CDATA[var UpdatesetHelper = Class.create();
-UpdatesetHelper.prototype = {
+        <name>ClosedUpdatesetHelper</name>
+        <script><![CDATA[var ClosedUpdatesetHelper = Class.create();
+ClosedUpdatesetHelper.prototype = {
 
   devUrl: '',
   uatUrl: '',
   prodUrl: '',
   devRecordsLimit: 0,
   devEncodedQuery: '',
-  debugMode : false,
-  knownConfigError : "There was error while retrieving the local updatesets. The error has been logged. Please check the log and if it is related to some missing configurations, please fix the configurations and try again.",
+  logger: null,
+  restHelper : null,
+  devFields : "name,state,sys_id,sys_created_by,sys_created_on",
 
   /**
    * 
@@ -32,7 +33,9 @@ UpdatesetHelper.prototype = {
     this.uatUrl = uatUrl;
     this.prodUrl = prodUrl;
     this.devRecordsLimit = maxRecordsLimit;
-    this.debugMode = gs.getProperty('x_293046_updateset.debug_mode', false);
+    this.logger = new x_293046_updateset.Logger(gs.getProperty('x_293046_updateset.debug_mode', false), "VF:");
+    this.restHelper = new x_293046_updateset.RestHelper(maxRecordsLimit, encodedQuery);
+
 
     if (encodedQuery) {
       encodedQuery = encodeURIComponent(encodedQuery); // Apply URI encoding as REST needs i
@@ -93,15 +96,15 @@ UpdatesetHelper.prototype = {
       const uatMatch = uat.filter(updateset => updateset.name === dev[i].name);
       if (uatMatch) {
         // Find any committed or else any local or default to null
-        joinedUpdatesets.uatUpdatesetLocal = 
-            (uatMatch.find(us => !us.update_source && us.state == "Committed") || uatMatch.find(us => !us.update_source)) || null;
+        joinedUpdatesets.uatUpdatesetLocal =
+          (uatMatch.find(us => !us.update_source && us.state == "Committed") || uatMatch.find(us => !us.update_source)) || null;
         joinedUpdatesets.uatUpdatesetRemote = uatMatch.find(us => us.update_source) || null;
       }
 
       const prodMatch = prod.filter(updateset => updateset.name === dev[i].name);
       if (prodMatch) {
-        joinedUpdatesets.prodUpdatesetLocal = 
-            (prodMatch.find(us => !us.update_source && us.state == "Committed") || prodMatch.find(us => !us.update_source)) || null;
+        joinedUpdatesets.prodUpdatesetLocal =
+          (prodMatch.find(us => !us.update_source && us.state == "Committed") || prodMatch.find(us => !us.update_source)) || null;
         joinedUpdatesets.prodUpdatesetRemote = prodMatch.find(us => us.update_source) || null;
       }
 
@@ -124,7 +127,7 @@ UpdatesetHelper.prototype = {
       prod: []
     };
 
-    let localUpdatesets = this.getDevUpdatesets();
+    let localUpdatesets = this.restHelper.getDevUpdatesets(this.devUrl, this.devFields);
 
     // Get the remote update-sets for the names we identified for DEV
     if (localUpdatesets && this.isValidJSON(localUpdatesets)) {
@@ -134,7 +137,7 @@ UpdatesetHelper.prototype = {
       const maxUrlLength = 1700;
       let encodedQueryList = this.encodeWithMaxLength(maxUrlLength, allUpdatesets.dev);
 
-      if(this.uatUrl){
+      if (this.uatUrl) {
         allUpdatesets.uat = this.getBatchUatUpdatesets(encodedQueryList);
       }
 
@@ -184,7 +187,7 @@ UpdatesetHelper.prototype = {
 
   /**
    * This function does one or more REST calls to get UAT update-sets based on the number of items in encodedQueryList
-   * @param {array of string} encodedQueryList : list of encoded query with specified max lenght
+   * @param {array of string} encodedQueryList : list of encoded query with specified max length
    * @returns : a flat array of UAT updatesets.
    */
   getBatchUatUpdatesets: function (encodedQueryList) {
@@ -239,7 +242,7 @@ UpdatesetHelper.prototype = {
 
     if (!this.uatUrl) return result;
 
-    result = this.getRemoteUpdatesets(this.uatUrl, encodedQuery);
+    result = this.restHelper.getRemoteUpdatesets(this.uatUrl, encodedQuery);
     return result;
   },
 
@@ -253,105 +256,15 @@ UpdatesetHelper.prototype = {
 
     if (!this.prodUrl) return result;
 
-    result = this.getRemoteUpdatesets(this.prodUrl, encodedQuery);
-    return result;
-  },
-
-  /**
-   * REST call to get all the DEV update-sets based on the filters defined in Widget Options or system properties
-   * @returns Return the local updatesets
-   */
-  getDevUpdatesets: function () {
-    let result = [];
-
-    try {
-      if (!this.devUrl) return result;
-
-      let r = new sn_ws.RESTMessageV2('x_293046_updateset.Updateset Management', 'Get Local Updateset');
-      r.setStringParameterNoEscape('base_url', this.devUrl);
-      r.setStringParameterNoEscape('record_limit', this.devRecordsLimit);
-      r.setStringParameterNoEscape('sys_parm_encoded_query', this.devEncodedQuery);
-
-      var response = r.execute();
-
-      if (!response.haveError()) {
-        result = response.getBody();
-        this.logIfDebug("DEV:result: " + result);
-      } else {
-        this.throwKnownError(
-          gs.getMessage(this.knownConfigError),
-          response.getErrorMessage()
-        );
-      }
-
-
-    } catch (ex) {
-      var message = ex.message;
-      gs.error(gs.getMessage("VF: Error in getting local Updatesets: " + message));
-      throw (message);
-    }
-
-    return result;
-  },
-
-  /**
-   * 
-   * @param {string} url : URL of the instance
-   * @param {string} encodedQuery : list of the DEV sys_ids concatenated
-   * @returns A list of all the update-sets based on DEV sys_ids
-   */
-  getRemoteUpdatesets: function (url, encodedQuery) {
-    let result = [];
-
-    if (!url) return result;
-
-    try {
-      var r = new sn_ws.RESTMessageV2('x_293046_updateset.Updateset Management', 'GET Remote Updatesets');
-      r.setStringParameterNoEscape('base_url', url);
-      r.setStringParameterNoEscape('fields', 'name,state,sys_id,remote_sys_id,update_source,parent');
-      r.setStringParameterNoEscape('encoded_query', encodedQuery);
-      r.setStringParameterNoEscape('record_limit', this.devRecordsLimit);
-
-      var response = r.execute();
-
-      if (!response.haveError()) {
-        result = response.getBody();
-        this.logIfDebug("Remote:result: " + result);
-      } else {
-        this.throwKnownError(
-          gs.getMessage(this.knownConfigError),
-          response.getErrorMessage()
-        );
-      }
-
-    } catch (ex) {
-      var message = ex.message || ex;
-      gs.error("VF: Error in getting local Updatesets: " + message);
-      throw new Error(ex);
-    }
-
+    result = this.restHelper.getRemoteUpdatesets(this.prodUrl, encodedQuery);
     return result;
   },
 
   //
   // Log the errors with prefix
   // 
-  logError : function(error){
-    if(error){
-      gs.error("VF: " + error);
-    }
-  },
-
-  //
-  // Log the known errors
-  //
-  throwKnownError : function(message, errorDetails){
-    
-    if(errorDetails){
-      this.logError(message + "\n\n" + errorDetails);
-    }
-
-    throw new Error(message); 
+  logError: function (error) {
+    this.logger.error(error);
   },
 
   /**
@@ -359,27 +272,23 @@ UpdatesetHelper.prototype = {
    * @param {json string} jsonString 
    * @returns 
    */
-  isValidJSON : function (jsonString) {
+  isValidJSON: function (jsonString) {
     try {
       JSON.parse(jsonString);
       return true;
     } catch (error) {
-      this.throwKnownError(
-        gs.getMessage(this.knownConfigError)
-      , "Unable to parse the JSON response: " + error.message || error);
+      this.logger.throwKnownError("Unable to parse the JSON response: " + error.message || error);
     }
   },
 
   //
   // Log if debug is enabled
   //
-  logIfDebug : function(message){
-    if(this.debugMode){
-      gs.info("VF: " + message);
-    }
+  logIfDebug: function (message) {
+    this.logger.info(message);
   },
 
-  type: 'UpdatesetHelper'
+  type: 'ClosedUpdatesetHelper'
 };
 
 
@@ -388,13 +297,13 @@ UpdatesetHelper.prototype = {
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2023-05-28 01:31:40</sys_created_on>
         <sys_id>0a064d0a474b65101955b1a8536d433b</sys_id>
-        <sys_mod_count>70</sys_mod_count>
-        <sys_name>UpdatesetHelper</sys_name>
+        <sys_mod_count>80</sys_mod_count>
+        <sys_name>ClosedUpdatesetHelper</sys_name>
         <sys_package display_value="Updateset Management" source="x_293046_updateset">b0a3e5714747e1101955b1a8536d43eb</sys_package>
         <sys_policy>read</sys_policy>
         <sys_scope display_value="Updateset Management">b0a3e5714747e1101955b1a8536d43eb</sys_scope>
         <sys_update_name>sys_script_include_0a064d0a474b65101955b1a8536d433b</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2023-06-10 03:54:49</sys_updated_on>
+        <sys_updated_on>2023-06-17 05:29:22</sys_updated_on>
     </sys_script_include>
 </record_update>

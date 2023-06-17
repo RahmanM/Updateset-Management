@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_row">
+    <sp_row action="INSERT_OR_UPDATE">
+        <class_name/>
+        <order>1</order>
+        <sp_column display_value="1">da9fb5af47d725101955b1a8536d4332</sp_column>
+        <sp_container/>
+        <sys_class_name>sp_row</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2023-06-14 07:45:56</sys_created_on>
+        <sys_id>22afb5af47d725101955b1a8536d4339</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>1</sys_name>
+        <sys_package display_value="Updateset Management" source="x_293046_updateset">b0a3e5714747e1101955b1a8536d43eb</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Updateset Management">b0a3e5714747e1101955b1a8536d43eb</sys_scope>
+        <sys_update_name>sp_row_22afb5af47d725101955b1a8536d4339</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2023-06-14 07:45:56</sys_updated_on>
+    </sp_row>
+</record_update>

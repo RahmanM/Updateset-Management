@@ -7,7 +7,7 @@
         <enable_certificate_based_authentication>false</enable_certificate_based_authentication>
         <enable_favorites>false</enable_favorites>
         <hide_portal_name>false</hide_portal_name>
-        <homepage display_value="um">8ce569f94747e1101955b1a8536d433e</homepage>
+        <homepage display_value="um">cbe225df479b61101955b1a8536d4379</homepage>
         <icon/>
         <kb_knowledge_base/>
         <kb_knowledge_page/>
@@ -21,24 +21,25 @@
         <search_application/>
         <search_results_configuration/>
         <sp_chat_queue/>
-        <sp_rectangle_menu/>
+        <sp_rectangle_menu display_value="UM Menu">1586e55b47db61101955b1a8536d43e2</sp_rectangle_menu>
         <sqanda_knowledge_base/>
         <sys_class_name>sp_portal</sys_class_name>
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2023-05-27 09:06:16</sys_created_on>
         <sys_id>374561394747e1101955b1a8536d43bf</sys_id>
-        <sys_mod_count>9</sys_mod_count>
+        <sys_mod_count>14</sys_mod_count>
         <sys_name>Updateset Management</sys_name>
         <sys_package display_value="Updateset Management" source="x_293046_updateset">b0a3e5714747e1101955b1a8536d43eb</sys_package>
         <sys_policy/>
         <sys_scope display_value="Updateset Management">b0a3e5714747e1101955b1a8536d43eb</sys_scope>
         <sys_update_name>sp_portal_374561394747e1101955b1a8536d43bf</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2023-06-03 10:13:41</sys_updated_on>
-        <theme display_value="UM Theme">47c66d7d4747e1101955b1a8536d43ce</theme>
+        <sys_updated_on>2023-06-13 12:23:32</sys_updated_on>
+        <theme display_value="UM Theme">92757513479f61101955b1a8536d4399</theme>
         <title>Updateset Management</title>
         <ts_index_group/>
         <url_suffix>um</url_suffix>
+        <x_snc_devtools_active>true</x_snc_devtools_active>
     </sp_portal>
     <sys_translated_text action="delete_multiple" query="documentkey=374561394747e1101955b1a8536d43bf"/>
 </record_update>

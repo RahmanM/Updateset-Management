@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_instance">
+    <sp_instance action="DELETE">
+        <active>true</active>
+        <class_name/>
+        <color>default</color>
+        <css/>
+        <glyph/>
+        <id/>
+        <order>1</order>
+        <roles/>
+        <short_description/>
+        <size>md</size>
+        <sp_column display_value="1">d36c3cbe474761101955b1a8536d4397</sp_column>
+        <sp_widget display_value="Compare updatesets">5118e1714787e1101955b1a8536d43b4</sp_widget>
+        <sys_class_name>sp_instance</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2023-05-30 08:41:07</sys_created_on>
+        <sys_id>e87cfc7e474761101955b1a8536d43b9</sys_id>
+        <sys_mod_count>32</sys_mod_count>
+        <sys_name/>
+        <sys_package display_value="Updateset Management" source="x_293046_updateset">b0a3e5714747e1101955b1a8536d43eb</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Updateset Management">b0a3e5714747e1101955b1a8536d43eb</sys_scope>
+        <sys_update_name>sp_instance_e87cfc7e474761101955b1a8536d43b9</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2023-06-10 10:40:43</sys_updated_on>
+        <title/>
+        <url/>
+        <widget_parameters><![CDATA[{
+	"dev_url": {
+		"value": "https://dev50458.service-now.com/",
+		"displayValue": "https://dev50458.service-now.com/"
+	},
+	"uat_url": {
+		"value": "https://dev50458.service-now.com/",
+		"displayValue": "https://dev50458.service-now.com/"
+	},
+	"prod_url": {
+		"value": "https://dev50458.service-now.com/",
+		"displayValue": "https://dev50458.service-now.com/"
+	},
+	"encoded_query": {
+		"value": "state=complete",
+		"displayValue": "state=complete"
+	},
+	"max_records_limit": {
+		"value": 200,
+		"displayValue": "200"
+	}
+}]]></widget_parameters>
+    </sp_instance>
+    <sys_translated_text action="DELETE" query="documentkey=e87cfc7e474761101955b1a8536d43b9"/>
+    <sys_update_version action="INSERT_OR_UPDATE">
+        <action>DELETE</action>
+        <application display_value="Updateset Management">b0a3e5714747e1101955b1a8536d43eb</application>
+        <file_path/>
+        <instance_id>d750b348db60dfc00e785d00cf961966</instance_id>
+        <instance_name>dev50458</instance_name>
+        <name>sp_instance_e87cfc7e474761101955b1a8536d43b9</name>
+        <payload>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;record_update table="sp_instance"&gt;&lt;sp_instance action="INSERT_OR_UPDATE"&gt;&lt;active&gt;true&lt;/active&gt;&lt;class_name/&gt;&lt;color&gt;default&lt;/color&gt;&lt;css/&gt;&lt;glyph/&gt;&lt;id/&gt;&lt;order&gt;1&lt;/order&gt;&lt;roles/&gt;&lt;short_description/&gt;&lt;size&gt;md&lt;/size&gt;&lt;sp_column display_value="1"&gt;d36c3cbe474761101955b1a8536d4397&lt;/sp_column&gt;&lt;sp_widget display_value="Compare updatesets"&gt;5118e1714787e1101955b1a8536d43b4&lt;/sp_widget&gt;&lt;sys_class_name&gt;sp_instance&lt;/sys_class_name&gt;&lt;sys_created_by&gt;admin&lt;/sys_created_by&gt;&lt;sys_created_on&gt;2023-05-30 08:41:07&lt;/sys_created_on&gt;&lt;sys_id&gt;e87cfc7e474761101955b1a8536d43b9&lt;/sys_id&gt;&lt;sys_mod_count&gt;32&lt;/sys_mod_count&gt;&lt;sys_name/&gt;&lt;sys_package display_value="Updateset Management" source="x_293046_updateset"&gt;b0a3e5714747e1101955b1a8536d43eb&lt;/sys_package&gt;&lt;sys_policy/&gt;&lt;sys_scope display_value="Updateset Management"&gt;b0a3e5714747e1101955b1a8536d43eb&lt;/sys_scope&gt;&lt;sys_update_name&gt;sp_instance_e87cfc7e474761101955b1a8536d43b9&lt;/sys_update_name&gt;&lt;sys_updated_by&gt;admin&lt;/sys_updated_by&gt;&lt;sys_updated_on&gt;2023-06-10 10:40:43&lt;/sys_updated_on&gt;&lt;title/&gt;&lt;url/&gt;&lt;widget_parameters&gt;&lt;![CDATA[{
+	"dev_url": {
+		"value": "https://dev50458.service-now.com/",
+		"displayValue": "https://dev50458.service-now.com/"
+	},
+	"uat_url": {
+		"value": "https://dev50458.service-now.com/",
+		"displayValue": "https://dev50458.service-now.com/"
+	},
+	"prod_url": {
+		"value": "https://dev50458.service-now.com/",
+		"displayValue": "https://dev50458.service-now.com/"
+	},
+	"encoded_query": {
+		"value": "state=complete",
+		"displayValue": "state=complete"
+	},
+	"max_records_limit": {
+		"value": 200,
+		"displayValue": "200"
+	}
+}]]&gt;&lt;/widget_parameters&gt;&lt;/sp_instance&gt;&lt;sys_translated_text action="delete_multiple" query="documentkey=e87cfc7e474761101955b1a8536d43b9"/&gt;&lt;/record_update&gt;</payload>
+        <payload_hash>1331175231</payload_hash>
+        <record_name/>
+        <reverted_from/>
+        <source>49f7d25b4783e5101955b1a8536d4318</source>
+        <source_table>sys_update_set</source_table>
+        <state>previous</state>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2023-06-10 10:40:43</sys_created_on>
+        <sys_id>2f41465a47d761101955b1a8536d4349</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_recorded_at>188a4e4e0680000001</sys_recorded_at>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2023-06-10 10:40:43</sys_updated_on>
+        <type>Instance</type>
+        <update_guid>e341465aa4d76110c96c007d7ad21949</update_guid>
+        <update_guid_history>e341465aa4d76110c96c007d7ad21949:1331175231,b2746896d75b211041b266628c8a1393:-2082349943,b603e412b75b211082624937455784e4:1331175231,35422c9e97d72110a752f64a5a3472cd:-2082349943,d57b8c1a0057211088f55915ec5801d8:-1239701899,dabc730edb93211036f534f52fcae0db:-568947009,a0eb1a80fc9f2110564e951e7c311836:-1745117711,3d7b1a80d29f21107ab605f95a43db94:-2125288641,56f89e0c005f21106eb51c3f973f178d:-230541967,0ad8928cac5f2110c0e1efd39d222710:459316667,4f78164c7b5f21107679e37bf1cf5c20:1259483153,e5e69648d45f2110f488f58f9bf0563a:-1219536751,fabe350c535b2110e045cb4e162b8223:2047335739,379e7504545b2110f1c135931b948bd7:-1219536751,8e3e31c8755b2110138420d060205bcc:-1011557895,b52bf5c0095b2110f670739d8c2c154c:-192135215,fec7994823d32110042c21f065bd0cbc:-2125288641,dab65984ffd321109f7e4d5d5f74ce92:-527180225,4e261dc0b4d32110c7a6901dcdc509e9:-2125288641,0856098c7d1321100d5be2e32f56bd9f:-527180225,5c37636f43cb2110a5aefff50942524a:-2125288641,f605ebe709cb21106bb044867870c53e:-597548741,94f4a3e3dbcb2110e133b2f601f1a53e:1288210381,ff222b23d2cb2110299e3a36dfd4ebbf:2087974733,14d1ebefe78b211049410800087e1f9e:2046752877,2fdd9fe72e832110f7753257046a1e56:-1779667133,8fb2d1df9e0ba510bd468030b31a95b8:-1292380751,4d419dd74f0ba510ffd780dfb3a7f81f:-1779667133,1480551fb607a5100d5a87521df5b1df:1462942531,2a8f499b5003a510739c48b3b9bd441e:-855340079,8d60250fb6c325101167618ac3ef94d3:-190433281,933e1d4bc3c325106a77060e9cf52c95:1448526153,6c7cfc7e2d476110d2abbf30b8d03fbb:281317046</update_guid_history>
+    </sys_update_version>
+    <sys_metadata_delete action="INSERT_OR_UPDATE">
+        <sys_audit_delete display_value="">6a15615747db61101955b1a8536d4305</sys_audit_delete>
+        <sys_class_name>sys_metadata_delete</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2023-06-13 11:11:25</sys_created_on>
+        <sys_db_object display_value="" name="sp_instance">sp_instance</sys_db_object>
+        <sys_id>6049b8dc43844c3089bca9a0c86ec900</sys_id>
+        <sys_metadata>e87cfc7e474761101955b1a8536d43b9</sys_metadata>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name/>
+        <sys_package display_value="Updateset Management" source="x_293046_updateset">b0a3e5714747e1101955b1a8536d43eb</sys_package>
+        <sys_parent/>
+        <sys_policy/>
+        <sys_scope display_value="Updateset Management">b0a3e5714747e1101955b1a8536d43eb</sys_scope>
+        <sys_scope_delete display_value="">8ae4658b49694d1f8c49ffadb25f7aa9</sys_scope_delete>
+        <sys_update_name>sp_instance_e87cfc7e474761101955b1a8536d43b9</sys_update_name>
+        <sys_update_version display_value="sp_instance_e87cfc7e474761101955b1a8536d43b9">2f41465a47d761101955b1a8536d4349</sys_update_version>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2023-06-13 11:11:25</sys_updated_on>
+    </sys_metadata_delete>
+</record_update>
