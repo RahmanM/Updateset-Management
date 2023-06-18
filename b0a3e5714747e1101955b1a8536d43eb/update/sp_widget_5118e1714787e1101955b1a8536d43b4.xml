@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
     <sp_widget action="INSERT_OR_UPDATE">
         <category>custom</category>
-        <client_script><![CDATA[api.controller = function ($filter) {
+        <client_script><![CDATA[api.controller = function ($filter, ExportToExcelService, UpdatesetDownloadService) {
     /* widget controller */
     var c = this;
 
@@ -103,37 +103,10 @@
     // Export the update-sets to Excel
     //
     c.exportTableToExcel = function () {
+        var filename = 'closed_updatesets';
+        var elementId = "update-sets";
 
-        var filename = 'updatesets';
-        var downloadLink;
-        var dataType = 'application/vnd.ms-excel';
-        var tableSelect = document.getElementById("update-sets");
-        var tableHTML = tableSelect.outerHTML.replace(/ /g, '%20');
-
-        // Specify file name
-        filename = filename ? filename + '.xls' : 'excel_data.xls';
-
-        // Create download link element
-        downloadLink = document.createElement("a");
-
-        document.body.appendChild(downloadLink);
-
-        if (navigator.msSaveOrOpenBlob) {
-            var blob = new Blob(['\ufeff', tableHTML], {
-                type: dataType
-            });
-            navigator.msSaveOrOpenBlob(blob, filename);
-        } else {
-            // Create a link to the file
-            downloadLink.href = 'data:' + dataType + ', ' + tableHTML;
-
-            // Setting the file name
-            downloadLink.download = filename;
-
-            //triggering the function
-            downloadLink.click();
-        }
-
+        ExportToExcelService.exportData(elementId, filename)
     }
 
     // ********************************************************************************************************************************************
@@ -145,21 +118,9 @@
     //
     c.exportUpdatesets = function () {
 
-        if (c.currentFilteredData && c.currentFilteredData.length > 0) {
-            var downloads = c.currentFilteredData.length;
-            var confirmed = confirm("This will download all the filtered " + downloads + " updatesets as XML file to your local machine. Are you sure you want to proceed?");
-
-            if(confirmed){
-                var ids = c.currentFilteredData.map(f=> f.devUpdateset.sys_id).toString();
-                var sets = ids.split(',');
-    
-                for (var i = 0, L = sets.length; i < L; i++) {
-                    window.open("export_as_remote_update_set.do?sysparam_table=sys_update_set&sysparam_sys_id=" + sets[i]);
-                }
-            }
-        }else{
-            alert('Filter the updatesets and then click this button. This will download all the filtered updatesets as XML to your local machine.')
-        }
+        // User the angular service to export to xml
+        var ids = c.currentFilteredData.map(f=> f.devUpdateset.sys_id).toString();
+        UpdatesetDownloadService.downloadXml(ids);
     }
 
 
@@ -417,14 +378,14 @@ table, th, td {
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2023-05-27 09:18:34</sys_created_on>
         <sys_id>5118e1714787e1101955b1a8536d43b4</sys_id>
-        <sys_mod_count>350</sys_mod_count>
+        <sys_mod_count>352</sys_mod_count>
         <sys_name>Compare updatesets</sys_name>
         <sys_package display_value="Updateset Management" source="x_293046_updateset">b0a3e5714747e1101955b1a8536d43eb</sys_package>
         <sys_policy/>
         <sys_scope display_value="Updateset Management">b0a3e5714747e1101955b1a8536d43eb</sys_scope>
         <sys_update_name>sp_widget_5118e1714787e1101955b1a8536d43b4</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2023-06-15 11:53:28</sys_updated_on>
+        <sys_updated_on>2023-06-18 01:35:45</sys_updated_on>
         <template><![CDATA[<!--Validation and error section -->
 <div ng-include="'validation-error-section'"></div>
 

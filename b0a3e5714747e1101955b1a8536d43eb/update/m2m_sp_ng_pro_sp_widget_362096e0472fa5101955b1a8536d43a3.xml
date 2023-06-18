@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="m2m_sp_ng_pro_sp_widget">
+    <m2m_sp_ng_pro_sp_widget action="INSERT_OR_UPDATE">
+        <sp_angular_provider display_value="UpdatesetDownloadService">7cd1ce2c476ba5101955b1a8536d4397</sp_angular_provider>
+        <sp_widget display_value="Compare updatesets">5118e1714787e1101955b1a8536d43b4</sp_widget>
+        <sys_class_name>m2m_sp_ng_pro_sp_widget</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2023-06-17 11:31:58</sys_created_on>
+        <sys_id>362096e0472fa5101955b1a8536d43a3</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>UpdatesetDownloadService.Compare updatesets</sys_name>
+        <sys_package display_value="Updateset Management" source="x_293046_updateset">b0a3e5714747e1101955b1a8536d43eb</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Updateset Management">b0a3e5714747e1101955b1a8536d43eb</sys_scope>
+        <sys_update_name>m2m_sp_ng_pro_sp_widget_362096e0472fa5101955b1a8536d43a3</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2023-06-17 11:31:58</sys_updated_on>
+    </m2m_sp_ng_pro_sp_widget>
+</record_update>
