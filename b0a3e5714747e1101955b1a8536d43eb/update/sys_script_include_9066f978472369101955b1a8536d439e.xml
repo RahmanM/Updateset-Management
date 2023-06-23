@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>x_293046_updateset.UpdatesetValidationBase</api_name>
+        <caller_access/>
+        <client_callable>false</client_callable>
+        <description/>
+        <name>UpdatesetValidationBase</name>
+        <script><![CDATA[var UpdatesetValidationBase = Class.create();
+UpdatesetValidationBase.prototype = {
+
+    extensionPointHelper: null,
+    validateResult: [],
+
+    initialize: function() {
+        this.extensionPointHelper = new x_293046_updateset.ExtensionPointHelper();
+    },
+
+    /**
+     * List of update-set sys ids to be validated
+     * Input: updatesetSysIds - Array of string
+     * Output: validation errors - Array of strings
+     */
+    validate: function( /*array*/ updatesetSysIds) {
+
+        var result = this.extensionPointHelper.callExtensionPoint("UpdatesetValidationExtensionPoint", "validate", updatesetSysIds);
+
+        if (typeof result !== "undefined"){
+            return result;
+		}
+
+        return validateResult;
+    },
+
+    type: 'UpdatesetValidationBase'
+};]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2023-06-18 04:22:43</sys_created_on>
+        <sys_id>9066f978472369101955b1a8536d439e</sys_id>
+        <sys_mod_count>1</sys_mod_count>
+        <sys_name>UpdatesetValidationBase</sys_name>
+        <sys_package display_value="Updateset Management" source="x_293046_updateset">b0a3e5714747e1101955b1a8536d43eb</sys_package>
+        <sys_policy>read</sys_policy>
+        <sys_scope display_value="Updateset Management">b0a3e5714747e1101955b1a8536d43eb</sys_scope>
+        <sys_update_name>sys_script_include_9066f978472369101955b1a8536d439e</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2023-06-18 04:33:03</sys_updated_on>
+    </sys_script_include>
+</record_update>

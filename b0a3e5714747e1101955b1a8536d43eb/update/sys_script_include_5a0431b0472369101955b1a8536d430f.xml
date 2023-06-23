@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>x_293046_updateset.UpdatesetValidateMultiApplications</api_name>
+        <caller_access/>
+        <client_callable>false</client_callable>
+        <description>Implements extension point x_293046_updateset.UpdatesetValidationExtensionPoint</description>
+        <name>UpdatesetValidateMultiApplications</name>
+        <script><![CDATA[var UpdatesetValidateMultiApplications = Class.create();
+UpdatesetValidateMultiApplications.prototype = {
+
+    validateResult: [],
+
+    initialize: function() {},
+
+    /**
+     * List of update-set sys ids to be validated
+     * Input: updatesetSysIds - Array of string
+     * Output: validation errors - Array of strings
+     */
+    validate: function( /*array*/ updatesetSysIds) {
+
+		if(!updatesetSysIds || updatesetSysIds.length == 0){
+			return this.validateResult;
+		}
+		
+        //-------------------------------------------------------------
+        // Go through all the Update-sets that are WIP 
+        // Ignore the Default update-sets
+        //-------------------------------------------------------------
+        var grSysUpdateSet = new GlideRecord('sys_update_set');
+        grSysUpdateSet.addQuery('sys_id', 'IN', updatesetSysIds.toString());
+
+        //-------------------------------------------------------------
+
+        grSysUpdateSet.query();
+
+        // Distinct Update-set names
+        var distinctXMLList = [];
+
+        while (grSysUpdateSet.next()) {
+            //---------------------------------------------------------------
+            // Find all the customer updates that belongs to this update-set and are different than the update-set application
+            //----------------------------------------------------------------
+            var grCustomerUpdates = new GlideRecord('sys_update_xml');
+            grCustomerUpdates.addQuery("update_set.sys_id", grSysUpdateSet.getUniqueValue());
+            grCustomerUpdates.addQuery("application", '!=', grSysUpdateSet.getValue('application'));
+            grCustomerUpdates.query();
+
+            while (grCustomerUpdates.next()) {
+                // Don't report the same update-set name more than once, as long as it is reported once is enough!!
+                if (distinctXMLList.indexOf(grSysUpdateSet.getValue('name')) == -1) {
+
+                    this.validateResult.push({
+                        message : `Found an update-set: '${grSysUpdateSet.getValue('name')}' that its customer updates has more than one applications (at least).`,
+                        sys_id: grSysUpdateSet.getUniqueValue()
+                    });
+                    
+                    distinctXMLList.push(grSysUpdateSet.getValue('name'));
+
+                }
+            }
+
+        }
+
+        return this.validateResult;
+    },
+
+    type: 'UpdatesetValidateMultiApplications'
+};]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2023-06-18 04:07:32</sys_created_on>
+        <sys_id>5a0431b0472369101955b1a8536d430f</sys_id>
+        <sys_mod_count>5</sys_mod_count>
+        <sys_name>UpdatesetValidateMultiApplications</sys_name>
+        <sys_package display_value="Updateset Management" source="x_293046_updateset">b0a3e5714747e1101955b1a8536d43eb</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Updateset Management">b0a3e5714747e1101955b1a8536d43eb</sys_scope>
+        <sys_update_name>sys_script_include_5a0431b0472369101955b1a8536d430f</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2023-06-18 05:21:59</sys_updated_on>
+    </sys_script_include>
+</record_update>

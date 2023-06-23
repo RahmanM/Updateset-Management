@@ -3,10 +3,12 @@
         <category>custom</category>
         <client_script><![CDATA[api.controller=function() {  /* widget controller */  var c = this;};]]></client_script>
         <controller_as>c</controller_as>
-        <css>#header-image img {&#13;
-    display:block;&#13;
-    margin:auto;&#13;
-}</css>
+        <css>&#13;
+  &#13;
+  &#13;
+  &#13;
+  &#13;
+  </css>
         <data_table>sp_instance</data_table>
         <demo_data/>
         <description/>
@@ -26,27 +28,30 @@
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2023-06-14 06:58:28</sys_created_on>
         <sys_id>07c4f9a3479725101955b1a8536d43fc</sys_id>
-        <sys_mod_count>5</sys_mod_count>
+        <sys_mod_count>45</sys_mod_count>
         <sys_name>Home Header</sys_name>
         <sys_package display_value="Updateset Management" source="x_293046_updateset">b0a3e5714747e1101955b1a8536d43eb</sys_package>
         <sys_policy/>
         <sys_scope display_value="Updateset Management">b0a3e5714747e1101955b1a8536d43eb</sys_scope>
         <sys_update_name>sp_widget_07c4f9a3479725101955b1a8536d43fc</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2023-06-17 02:40:41</sys_updated_on>
-        <template><![CDATA[<div id="header-image">
-
-<h1>
-  TODO: 
-  Notes on features
-  </h1>
-</div>
-
-<div id="header-image">
-
-<h1>
-  Notes on config
-  </h1>
+        <sys_updated_on>2023-06-18 02:38:50</sys_updated_on>
+        <template><![CDATA[<div class="container-fluid" id="wrapper">
+  <div class="row">
+    <div class="jumbotron col-md-12">
+        <h1 class="display-4">Features</h1>
+        <p class="lead">
+          This is a simple hero unit, a simple jumbotron-style component for
+          calling extra attention to featured content or information.
+        </p>
+        <hr class="my-4" />
+        <p>
+          It uses utility classes for typography and spacing to space content
+          out within the larger container.
+        </p>
+        <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
+    </div>
+  </div>
 </div>]]></template>
     </sp_widget>
 </record_update>
