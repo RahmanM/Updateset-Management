@@ -80,6 +80,36 @@
         UpdatesetDownloadService.downloadXml(ids);
     }
 
+    //
+    // Copy the update-set names as text e.g. when trying to create the release notes
+    //
+    c.copyNames = function(){
+        if(c.currentFilteredData && c.currentFilteredData.length > 1){
+            var names = [];
+            if(c.reversedSort == false){
+                // sort asc
+                names = c.currentFilteredData.sort((a,b)=> a.name.localeCompare(b.name)).map(d=> d.name);
+            }else{
+                // sort desc
+                names = c.currentFilteredData.sort((a,b)=> b.name.localeCompare(a.name)).map(d=> d.name);
+            }
+
+            navigator.clipboard.writeText(names.join("\n"));
+            alert('All update-set names are copied to the clipboard.')
+        }
+    }
+
+    //
+    // Apply the configured validations to the updatesets and display the result
+    //
+    c.validateUpdatesets = function(){
+        var ids = c.currentFilteredData.map(f=> f.sys_id);
+
+        var inputs = {validate:true, sysIds: ids};
+        c.server.get(inputs).then((response)=>{
+            c.validationsResult = response.data.validationsResult;
+        });
+    }
 
 };]]></client_script>
         <controller_as>c</controller_as>
@@ -206,6 +236,15 @@ table, th, td {
         <roles/>
         <script><![CDATA[(function () {
 
+	// Validate updatesets
+	if (input && input.validate) {
+		//gs.info("VF: validation calld!" + input.sysIds.toString())
+		var validator = new x_293046_updateset.UpdatesetValidationBase();
+		var result = validator.validate(input.sysIds);
+		data.validationsResult = result;
+		return;
+	}
+
 	// ----------------------------------------------------------------------------------------------------------------------------------------
 	// Get instance option values from widget
 	// ----------------------------------------------------------------------------------------------------------------------------------------
@@ -277,15 +316,18 @@ table, th, td {
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2023-06-17 02:45:49</sys_created_on>
         <sys_id>63b75428476b65101955b1a8536d432e</sys_id>
-        <sys_mod_count>29</sys_mod_count>
+        <sys_mod_count>52</sys_mod_count>
         <sys_name>Open Updatesets</sys_name>
         <sys_package display_value="Updateset Management" source="x_293046_updateset">b0a3e5714747e1101955b1a8536d43eb</sys_package>
         <sys_policy/>
         <sys_scope display_value="Updateset Management">b0a3e5714747e1101955b1a8536d43eb</sys_scope>
         <sys_update_name>sp_widget_63b75428476b65101955b1a8536d432e</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2023-06-18 01:36:12</sys_updated_on>
-        <template><![CDATA[<!--Validation and error section -->
+        <sys_updated_on>2023-06-23 10:51:31</sys_updated_on>
+        <template><![CDATA[<!--Validators -->
+<div ng-include="'validator-section-ou'"></div>
+
+<!--Validation and error section -->
 <div ng-include="'validation-error-section-ou'"></div>
 
 <div ng-show="data.isConfigured && !data.showError">

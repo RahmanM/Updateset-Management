@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_extension_point">
+    <sys_extension_point action="INSERT_OR_UPDATE">
+        <api_name>x_293046_updateset.UpdatesetValidationExtensionPoint</api_name>
+        <description/>
+        <example><![CDATA[var UpdatesetValidationExtensionPoint = Class.create();
+UpdatesetValidationExtensionPoint.prototype = {
+
+	validateResult : [],
+
+    initialize: function() {
+    },
+
+	/**
+	 * List of update-set sys ids to be validated
+	 * Input: updatesetSysIds - Array of string
+	 * Output: validation errors - Array of strings
+	 */
+    validate: function(/*array*/ updatesetSysIds) {
+        
+		return validateResult;
+    },
+
+    type: 'UpdatesetValidationExtensionPoint'
+};]]></example>
+        <name>UpdatesetValidationExtensionPoint</name>
+        <restrict_scope>false</restrict_scope>
+        <sys_class_name>sys_extension_point</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2023-06-18 04:07:16</sys_created_on>
+        <sys_id>c5f2f1b0472369101955b1a8536d4389</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>UpdatesetValidationExtensionPoint</sys_name>
+        <sys_package display_value="Updateset Management" source="x_293046_updateset">b0a3e5714747e1101955b1a8536d43eb</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Updateset Management">b0a3e5714747e1101955b1a8536d43eb</sys_scope>
+        <sys_update_name>sys_extension_point_c5f2f1b0472369101955b1a8536d4389</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2023-06-18 04:07:16</sys_updated_on>
+    </sys_extension_point>
+</record_update>
