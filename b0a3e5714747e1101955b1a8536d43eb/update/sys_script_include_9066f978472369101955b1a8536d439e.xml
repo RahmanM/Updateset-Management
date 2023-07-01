@@ -23,8 +23,9 @@ UpdatesetValidationBase.prototype = {
      * Output: validation errors - Array of strings
      */
     validate: function( /*array*/ updatesetSysIds) {
-
-        var result = this.extensionPointHelper.callExtensionPoint("UpdatesetValidationExtensionPoint", "validate", updatesetSysIds);
+		var objParms = {updatesetSysIds};
+        var result = 
+		this.extensionPointHelper.callExtensionPoint("UpdatesetValidationExtensionPoint", "validate", objParms);
 
         if (typeof result !== "undefined"){
             return result;
@@ -39,13 +40,13 @@ UpdatesetValidationBase.prototype = {
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2023-06-18 04:22:43</sys_created_on>
         <sys_id>9066f978472369101955b1a8536d439e</sys_id>
-        <sys_mod_count>1</sys_mod_count>
+        <sys_mod_count>3</sys_mod_count>
         <sys_name>UpdatesetValidationBase</sys_name>
         <sys_package display_value="Updateset Management" source="x_293046_updateset">b0a3e5714747e1101955b1a8536d43eb</sys_package>
         <sys_policy>read</sys_policy>
         <sys_scope display_value="Updateset Management">b0a3e5714747e1101955b1a8536d43eb</sys_scope>
         <sys_update_name>sys_script_include_9066f978472369101955b1a8536d439e</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2023-06-18 04:33:03</sys_updated_on>
+        <sys_updated_on>2023-06-25 03:40:08</sys_updated_on>
     </sys_script_include>
 </record_update>

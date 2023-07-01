@@ -6,19 +6,20 @@
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2023-06-23 10:44:40</sys_created_on>
         <sys_id>43ceb8aa476b61101955b1a8536d4367</sys_id>
-        <sys_mod_count>9</sys_mod_count>
+        <sys_mod_count>19</sys_mod_count>
         <sys_name>validator-section-ou</sys_name>
         <sys_package display_value="Updateset Management" source="x_293046_updateset">b0a3e5714747e1101955b1a8536d43eb</sys_package>
         <sys_policy/>
         <sys_scope display_value="Updateset Management">b0a3e5714747e1101955b1a8536d43eb</sys_scope>
         <sys_update_name>sp_ng_template_43ceb8aa476b61101955b1a8536d4367</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2023-06-23 11:07:34</sys_updated_on>
+        <sys_updated_on>2023-06-27 11:30:58</sys_updated_on>
         <template><![CDATA[<div ng-show="c.validationsResult && c.validationsResult.length > 0">
     <ul class="alert alert-danger alert-dismissible" ng-repeat="validation in c.validationsResult">
         <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-        <li  >{{:: validation.message}}</li>
+        <li  style="display:inline-block">{{:: validation.message}}</li> <span>Click <a target="_blank" ng-href="/sys_update_set.do?sysparm_query=sys_id={{validation.sys_id}}">here</a> to open the update-set.</span>
     </ul>
-</div>]]></template>
+</div>
+]]></template>
     </sp_ng_template>
 </record_update>
